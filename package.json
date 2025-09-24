@@ -1,0 +1,40 @@
+{
+  "name": "demo-copilot-agent-mode",
+  "version": "1.0.0",
+  "description": "OctoCAT Supply Chain Management System",
+  "private": true,
+  "workspaces": [
+    "api",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "start": "npm run start:install --workspace=api",
+    "dev:api": "npm run dev --workspace=api",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "db:seed": "npm run db:init --workspace=api -- --seed",
+    "dev": "npm run db:seed && concurrently \"npm run dev:api\" \"npm run dev:frontend\"",
+    "test": "npm run test --workspaces",
+    "test:api": "npm run test --workspace=api",
+    "test:frontend": "npm run test --workspace=frontend",
+    "lint": "npm run lint --workspace=frontend",
+    "prettify": "prettier --cache --write \"**/*.{ts,tsx}\""
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.1",
+    "prettier": "^3.3.3"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": true,
+    "trailingComma": "all",
+    "printWidth": 100,
+    "tabWidth": 2,
+    "arrowParens": "always",
+    "endOfLine": "lf"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
