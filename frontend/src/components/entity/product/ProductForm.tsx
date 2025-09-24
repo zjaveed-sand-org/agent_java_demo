@@ -37,8 +37,8 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
       sku: '',
       unit: '',
       supplierId: suppliers[0]?.supplierId || 0,
-      imgName: '',
-    },
+      imgName: ''
+    }
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,21 +58,13 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div
-        className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-6 w-full max-w-md shadow-xl transition-colors duration-300`}
-      >
-        <h2
-          className={`text-2xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'} mb-4 transition-colors duration-300`}
-        >
+      <div className={`${darkMode ? 'bg-gray-800' : 'bg-white'} rounded-lg p-6 w-full max-w-md shadow-xl transition-colors duration-300`}>
+        <h2 className={`text-2xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'} mb-4 transition-colors duration-300`}>
           {product ? 'Edit Product' : 'Add New Product'}
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}
-            >
-              Name
-            </label>
+            <label className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}>Name</label>
             <input
               type="text"
               value={formData.name}
@@ -82,11 +74,7 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
             />
           </div>
           <div>
-            <label
-              className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}
-            >
-              Description
-            </label>
+            <label className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}>Description</label>
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -95,11 +83,7 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
             />
           </div>
           <div>
-            <label
-              className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}
-            >
-              Price
-            </label>
+            <label className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}>Price</label>
             <input
               type="number"
               value={formData.price}
@@ -111,11 +95,7 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
             />
           </div>
           <div>
-            <label
-              className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}
-            >
-              SKU
-            </label>
+            <label className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}>SKU</label>
             <input
               type="text"
               value={formData.sku}
@@ -125,11 +105,7 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
             />
           </div>
           <div>
-            <label
-              className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}
-            >
-              Unit
-            </label>
+            <label className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}>Unit</label>
             <input
               type="text"
               value={formData.unit}
@@ -139,11 +115,7 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
             />
           </div>
           <div>
-            <label
-              className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}
-            >
-              Image Name
-            </label>
+            <label className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}>Image Name</label>
             <input
               type="text"
               value={formData.imgName}
@@ -153,11 +125,7 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
             />
           </div>
           <div>
-            <label
-              className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}
-            >
-              Supplier
-            </label>
+            <label className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}>Supplier</label>
             <select
               value={formData.supplierId}
               onChange={(e) => setFormData({ ...formData, supplierId: parseInt(e.target.value) })}
@@ -172,11 +140,7 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
             </select>
           </div>
           <div>
-            <label
-              className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}
-            >
-              Discount (%)
-            </label>
+            <label className={`block ${darkMode ? 'text-light' : 'text-gray-700'} mb-1 transition-colors duration-300`}>Discount (%)</label>
             <input
               type="number"
               value={formData.discount !== undefined ? formData.discount * 100 : ''}
@@ -190,9 +154,7 @@ export default function ProductForm({ product, suppliers, onClose, onSave }: Pro
               max="100"
               step="1"
             />
-            <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Leave empty for no discount
-            </p>
+            <p className={`text-xs mt-1 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Leave empty for no discount</p>
           </div>
           <div className="flex justify-end space-x-2">
             <button

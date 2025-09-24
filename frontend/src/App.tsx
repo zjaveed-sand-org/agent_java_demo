@@ -13,12 +13,10 @@ import { useTheme } from './context/ThemeContext';
 // Wrapper component to apply theme classes
 function ThemedApp() {
   const { darkMode } = useTheme();
-
+  
   return (
     <Router>
-      <div
-        className={`flex flex-col min-h-screen ${darkMode ? 'bg-dark' : 'bg-gray-100'} transition-colors duration-300`}
-      >
+      <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-dark' : 'bg-gray-100'} transition-colors duration-300`}>
         <Navigation />
         <main className="flex-grow">
           <Routes>

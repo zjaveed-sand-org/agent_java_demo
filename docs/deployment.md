@@ -45,12 +45,11 @@ Configure the Web Apps to use Managed Identity (SystemAssigned) to authenticate 
    - both running on B1 SKU
    - API web app running API container
    - Frontend web app running Frontend container
-      - Configured to point to ACR
+   - Configured to point to ACR
      - use respective API or Frontend image and tag
      - ensure frontend URL is allowed in CORS for API
    - Use `uniqueString()` to add a unique post-fix to the web app names
    - ensure that API_HOST and API_PORT are correctly configured for the frontend deployment
-      - SQLite persistence for API: mount a writable volume for the DB file and set `DB_FILE` accordingly (e.g., `/home/site/data/app.db`)
 
 4. **No role assignments**
    - do not include ACR Pull role assignments - the Service Principal is already configured for this.
@@ -72,22 +71,6 @@ API_HOST=<host_of_API_web_app>
 API_PORT=80
 ```
 - Make sure that the `API_HOST` does NOT contain `https://` (it is the host, not the URL).
-
-### SQLite Persistence (API)
-- The API uses SQLite. Configure persistence in hosted environments:
-   - Set `DB_FILE` to a path under the Web App persistent storage (e.g., `/home/site/data/app.db` on Linux)
-   - Ensure the containing directory exists or is created on startup
-   - Optionally enable WAL with `DB_ENABLE_WAL=true` for better concurrency
-   - Foreign key enforcement is enabled by default; override with `DB_FOREIGN_KEYS=false` if needed
-- For containers (compose/k8s), mount a host or managed volume to persist the DB file
-
-Example env vars for API:
-```
-DB_FILE=/home/site/data/app.db
-DB_ENABLE_WAL=true
-DB_FOREIGN_KEYS=true
-DB_TIMEOUT=30000
-```
 
 ## 3. GitHub Actions Workflow Plan
 
@@ -158,11 +141,6 @@ DB_TIMEOUT=30000
         name: Staging|Production
         url: ${{ steps.deploy.outputs.frontendUrl }}
       ```
-
-### Backups and Recovery
-- Since SQLite is file-based, implement periodic backups of the DB file location
-- On Azure Web Apps, use WebJobs or scheduled workflows to copy `/home/site/data/app.db` to blob storage
-- For Docker, copy the volume or bind-mount target to backup storage
 
 ## 3. IMPORTANT! Final Checks
 - Ensure that the bicep files don't have any unused declarations/varialbes

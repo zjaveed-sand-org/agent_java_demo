@@ -34,6 +34,26 @@ This demo app can be used to show a number of Copilot features:
 
   ![Switch to Insiders](./vscode-switch-to-insiders.png)
 
+### **Required Tools for Local Demos**
+
+> If you run the demos inside a Codespace, you won't need to do any of this since the Codespace will be configured.
+
+To run the demos locally, you will have to have some tools installed on your machine.
+
+For all "language variants" of the demo you will need:
+- NodeJS 18+ (I'd recommend that you [install nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script) to manage your NodeJS)
+- Docker Desktop (or [Podman](https://podman.io/))
+
+#### Additional Tools per language
+
+- Java
+  - Java 21+
+  - Maven
+- Python
+  - Python 3.8+
+- DotNet
+  - DotNet Core 9+
+
 ### **Building, Running and Debugging the code**
 
 Refer to [the build docs](./build.md).
@@ -236,25 +256,15 @@ You can also use the Command Palette to start the MCP servers.
   1. Chat with Copilot to address one of these issues: `generate a fix for ...`
   1. (Optional with GitHub MCP Server): Ask Copilot to `create an issue to fix ...` and select a vulnerability for Copilot to create an Issue
 
-### **Demo: GHAS and Autofix for existing alerts**
+### **Demo: GHAS and Autofix**
 
-- **What to show:** GHAS Autofix can fix existing alerts once they area detected.
+- **What to show:** GHAS Autofix (our first platform AI agent)
 - **Why:** Demonstrate that Autofix is built into the platform using Copilot.
 - **How:**  
-  1. Open the repo in the web, navigate to Settings and enable Code scanning
-  1. The scan should return at least 1 vulnerability, including a SQL injection (`Database query built from user-controlled sources`)
+  1. Open the repo, navigate to settings and enable Code scanning
+  1. The scan should return at least 1 vulnerability
   1. Show "Generate fix" and how that can auto-generate a fix
   1. Show how you can Chat about this vulnerability and fix in Chat
-
-### **Demo: Autofix in PRs**
-
-- **What to show:** GHAS Autofix built into PRs
-- **Why:** Demonstrate that Autofix becomes a part of the developer workflow naturally at the PR
-- **How:**  
-  1. Open the Chat window and enter `/code-injection` to run the code injection prompt.
-  2. **Note**: Sometimes a model will refuse since this is "bad" - try another model in this case and show customers how "responsible" Copilot is.
-  3. The prompt should create a new branch, change the `delivery.ts` route to add a vulnerability, and push.
-  4. Create a PR for the new branch and show how GHAS alerts and suggests a fix inline in the PR.
 
 ### **Demo: Using `/handoff` Custom Prompt for Session Management**
 - **What to show:** Using the custom `/handoff` prompt to hand off Ask/Agent work to another session with proper context preservation.
@@ -314,49 +324,14 @@ You can also use the Command Palette to start the MCP servers.
    - Codifying repetitive parts of existing workflows
    - Improving the discoverability of available Copilot use cases
 
-### **Demo: Using Copilot to help you Copilot (inception)**
-
-- **What to show:** Using a Chat Mode to help you refine your prompt, including a clarity score
-- **Why**: Helping users clarify their prompts is key to getting good results: but most developers don't know how to improve their prompts. This custom Chat Mode helps to improve prompts.
-- **How:**
-  1. Select "RefinePrompt" in the Chat mode
-  2. Enter a vague prompt: `I want a Cart page`. The output should ask some clarifying questions and have a low clarity score.
-  3. Attach the [cart image](docs/design/cart.png) to the Chat.
-  4. Enter a more detailed prompt: `I want a cart Page that shows the items in the cart currently using the attached image for design elements. Match dark/light modes. Show a shipping fee of $25 but free for orders over $150. Add a cart icon to the NavBar that shows the number of items in the cart and updates when items are added/removed. When the icon is clicked, navigate to the Cart page.`
-  5. You should get an even better prompt back with a high clarity score.
-
 ### **Demo: Using Coding Agent to Experiment in Parallel**  
 
-- **What to show:** Creating 3 variations of the Cart page in parallel.
+- **What to show:** Cerating 3 variations of the Cart page in parallel.
 - **Why:** Experimentation can be time-consuming and costly - unless you get coding agent to do it for you - in parallel! Then you can choose the option you like the best.
 - **How:**  
   1. Make sure you have the GitHub Remote MCP server running
   2. Run the `demo-cca-parallel` prompt using the Command Palette
   3. **Note**: This takes a couple minutes to create the Issues and then Coding Agent takes about 20 minutes to complete the code changes, so be prepared for other demos or do this before your live demo and just show the results.
-
-### **Demo: Self-healing DevOps**
-
-- **What to show:** Coding Agent can self-heal failing Actions workflows.
-- **Why:** Many times failing CI/CD pipelines can be fixed by simple changes - this demo shows how you can use GitHub Copilot (via the [ai-inference Action](https://github.com/actions/ai-inference)) to self-heal failing jobs.
-- **How:**  
-  1. You will need to generate a PAT since the prompt for analyzing the failed job uses MCP. Navigate to your GitHub Developer Settings and generate a Fine-grained token with the following permissions:
-     1. Org level: `Models` read-only
-     2. Repo level: `Actions` read-only, `Contents` read-only, `Issues` read/write
-  2. In the repo, navigate to Settings and add a new Actions repository secret called `AUTO_REMEDIATION_PAT` with your PAT
-  3. Create a failure in the code
-     1. Edit the [branch.ts route file](../api/src/routes/branch.ts)
-     2. Find the put method and insert a breaking change:
-        ```javascript
-        if (index !== -1) {
-          branches[index] = req.body;
-          branches[index].name += ` (updated)`; // <-- add this line
-        ```
-      3. Commit and push
-   4. This will trigger the `ci` workflow, which will fail
-   5. The failure in turn triggers the `auto-analyze-failures` workflow, which will analyze the build failure, create an Issue and assign it to Copilot
-   6. Coding Agent will create the PR to fix the issue by reverting the line that broke the test
-   7. **Note**: This whole workflow takes a few minutes, so if you're going to show this, you may want to run this before your demo.
-   8. The [failed-run-analyze.prompt.yml]().github/models/failed-run-analyze.prompt.yml) file contains the prompt used in the workflow to analyze the build failure. You can open this in the Models tab in the repo, but it requires MCP so you won't be able to test it fully in Models.
 
 ## **Key Takeaways for Customers**  
 

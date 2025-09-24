@@ -8,6 +8,7 @@ This guide provides instructions for building, running, and testing the OctoCAT 
 - npm (latest version recommended)
 - Docker/Podman (optional, for containerization)
 
+<<<<<<< HEAD
 ### Additional prerequisited for Python API
 
 - Python 3.12 (or later)
@@ -24,6 +25,8 @@ This guide provides instructions for building, running, and testing the OctoCAT 
    ```bash
    npm install
    ```
+=======
+>>>>>>> c36b759 (fix: remove outdated instruction for code compilation verification)
 
 ## Building the Application
 
@@ -36,30 +39,11 @@ You can build the entire application or its individual components using the foll
 npm run build
 
 # Build only the API component
-npm run build --workspace=api
+cd api && mvn clean compile
 
 # Build only the Frontend component
 npm run build --workspace=frontend
 ```
-
-### Database management (API workspace)
-
-```bash
-# Initialize DB (migrations + seed)
-npm run db:init --workspace=api
-
-# Run migrations only
-npm run db:migrate --workspace=api
-
-# Seed data only
-npm run db:seed --workspace=api
-```
-
-Environment variables:
-- DB_FILE: path to SQLite database file (default: `api/data/app.db`)
-- DB_ENABLE_WAL: enable WAL mode (default: true)
-- DB_FOREIGN_KEYS: enforce foreign keys (default: true)
-- DB_TIMEOUT: busy timeout in ms (default: 30000)
 
 ### Using VS Code Tasks
 
@@ -108,8 +92,8 @@ This will start both the API and Frontend in development mode with the integrate
 # Run all tests across all workspaces
 npm run test
 
-# Run tests for a specific workspace
-npm run test --workspace=api
+# Run tests for the API
+cd api && mvn test
 ```
 
 ### Linting
@@ -124,8 +108,6 @@ npm run lint
 ### Port Configuration
 
 The API runs on port 3000 by default, and the Frontend runs on port 5137. When running in a Codespace environment, ensure that the API port visibility is set to `public` to avoid CORS errors when the Frontend tries to communicate with the API.
-
-For Docker, the sample compose maps API to 3000 and frontend to 3001.
 
 ### Docker Deployment
 

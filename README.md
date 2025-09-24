@@ -33,8 +33,7 @@ erDiagram
 
 ### Tech Stack
 - **Frontend**: React 18+, TypeScript, Tailwind CSS, Vite
-- **Backend**: Express.js, TypeScript, SQLite, OpenAPI/Swagger
-- **Data**: SQLite (file db at `api/data/app.db`; in-memory for tests)
+- **Backend**: Java with SpringBoot
 - **DevOps**: Docker
 
 ## 🎯 Key Demo Scenarios
@@ -72,20 +71,6 @@ erDiagram
    npm run dev
    ```
 
-Optional: initialize the database explicitly (migrations + seed):
-```bash
-npm run db:init --workspace=api
-```
-
-Handy DB scripts (API workspace):
-```bash
-# Run migrations only
-npm run db:migrate --workspace=api
-
-# Seed data only
-npm run db:seed --workspace=api
-```
-
 Or use the VS Code tasks:
 - `Cmd/Ctrl + Shift + P` -> `Run Task` -> `Build All`
 - Use the Debug panel to run `Start API & Frontend`
@@ -103,13 +88,7 @@ To showcase extended capabilities:
 ## 📚 Documentation
 
 - [Detailed Architecture](./docs/architecture.md)
-- [SQLite Integration](./docs/sqlite-integration.md)
 - [Complete Demo Script](./docs/demo-script.md)
-
-Database defaults and env vars:
-- DB file: `api/data/app.db` (override with `DB_FILE=/absolute/path/to/file.db`)
-- Enable WAL: `DB_ENABLE_WAL=true` (default)
-- Foreign keys: `DB_FOREIGN_KEYS=true` (default)
 
 ## 🎓 Pro Tips for Solution Engineers
 
