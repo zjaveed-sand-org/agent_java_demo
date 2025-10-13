@@ -3,8 +3,8 @@
 ## GitHub Repo Information
 
 This repo is hosted in GitHub:
-- owner: octodemo
-- repo: copilot_agent_mode-opulent-fortnight
+- owner: zjaveed-sand-org
+- repo: agent_java_demo
 
 ## Architecture
 
