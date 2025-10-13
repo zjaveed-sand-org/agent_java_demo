@@ -1,7 +1,7 @@
 ---
 mode: 'agent'
 description: 'Use Coding Agent to test multiple paths - in parallel!'
-tools: ['search/codebase', 'fetch', 'githubRepo', 'openSimpleBrowser', 'problems', 'search', 'search/searchResults', 'usages', 'github-remote/add_sub_issue', 'github/assign_copilot_to_issue', 'github/create_issue', 'github/get_issue', 'github/list_issues', 'github-remote/list_sub_issues', 'github/search_issues', 'github/update_issue', 'github/*']
+tools: ['search', 'github-remote/*', 'Azure MCP Server/search', 'usages', 'problems', 'openSimpleBrowser', 'fetch', 'githubRepo']
 ---
 
 # Demo: Use Coding Agent to test multiple paths - in parallel!
