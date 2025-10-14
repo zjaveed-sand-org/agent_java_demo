@@ -28,7 +28,32 @@ export default {
       },
       width: {
         '7/8': '87.5%'
-      }
+      },
+      keyframes: {
+        shake: {
+          '0%, 100%': { transform: 'rotate(0deg)' },
+          '25%': { transform: 'rotate(-5deg)' },
+          '75%': { transform: 'rotate(5deg)' },
+        },
+        slideInRight: {
+          '0%': { transform: 'translateX(100%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        slideOutLeft: {
+          '0%': { transform: 'translateX(0)', opacity: '1' },
+          '100%': { transform: 'translateX(-100%)', opacity: '0' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        shake: 'shake 0.3s ease-in-out',
+        slideInRight: 'slideInRight 0.4s ease-out',
+        slideOutLeft: 'slideOutLeft 0.3s ease-out',
+        fadeIn: 'fadeIn 0.3s ease-out',
+      },
     },
   },
   plugins: [],
