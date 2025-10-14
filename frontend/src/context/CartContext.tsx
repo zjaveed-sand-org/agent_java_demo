@@ -1,5 +1,9 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+// Shipping constants
+export const FREE_SHIPPING_THRESHOLD = 100;
+export const STANDARD_SHIPPING_COST = 25;
+
 export interface CartItem {
   productId: number;
   name: string;
@@ -26,12 +30,21 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
-    const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [];
+    try {
+      const savedCart = localStorage.getItem('cart');
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error('Failed to load cart from localStorage:', error);
+      return [];
+    }
   });
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
+    try {
+      localStorage.setItem('cart', JSON.stringify(items));
+    } catch (error) {
+      console.error('Failed to save cart to localStorage:', error);
+    }
   }, [items]);
 
   const addToCart = (product: Omit<CartItem, 'quantity'>, quantity: number) => {
@@ -83,7 +96,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const getShipping = () => {
     const subtotal = getSubtotal();
-    return subtotal >= 100 ? 0 : 25;
+    return subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : STANDARD_SHIPPING_COST;
   };
 
   const getTotal = () => {

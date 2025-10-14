@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useCart } from '../../context/CartContext';
+import { useCart, FREE_SHIPPING_THRESHOLD } from '../../context/CartContext';
 import { useTheme } from '../../context/ThemeContext';
 
 export default function CartPage() {
@@ -9,8 +9,7 @@ export default function CartPage() {
   const subtotal = getSubtotal();
   const shipping = getShipping();
   const total = getTotal();
-  const freeShippingThreshold = 100;
-  const amountUntilFreeShipping = Math.max(0, freeShippingThreshold - subtotal);
+  const amountUntilFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
 
   if (items.length === 0) {
     return (
