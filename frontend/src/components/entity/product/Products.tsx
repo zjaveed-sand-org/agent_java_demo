@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useQuery } from 'react-query';
 import { api } from '../../../api/config';
 import { useTheme } from '../../../context/ThemeContext';
+import { useCart } from '../../../context/CartContext';
 
 interface Product {
   productId: number;
@@ -28,6 +29,7 @@ export default function Products() {
   const [showModal, setShowModal] = useState(false);
   const { data: products, isLoading, error } = useQuery('products', fetchProducts);
   const { darkMode } = useTheme();
+  const { addToCart } = useCart();
 
   const filteredProducts = products?.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -44,12 +46,23 @@ export default function Products() {
   const handleAddToCart = (productId: number) => {
     const quantity = quantities[productId] || 0;
     if (quantity > 0) {
-      // TODO: Implement cart functionality
-      alert(`Added ${quantity} items to cart`);
-      setQuantities(prev => ({
-        ...prev,
-        [productId]: 0
-      }));
+      // Find the product and add it to cart using the cart context
+      // Finde das Produkt und füge es zum Warenkorb hinzu über den Warenkorb-Context
+      const product = products?.find(p => p.productId === productId);
+      if (product) {
+        // Call addToCart from cart context with product and quantity
+        // Rufe addToCart vom Warenkorb-Context mit Produkt und Menge auf
+        addToCart(product, quantity);
+        
+        // Show success message / Erfolgsmeldung anzeigen
+        alert('Added to cart!');
+        
+        // Reset quantity for this product / Setze Menge für dieses Produkt zurück
+        setQuantities(prev => ({
+          ...prev,
+          [productId]: 0
+        }));
+      }
     }
   };
 
