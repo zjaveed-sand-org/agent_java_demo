@@ -24,7 +24,6 @@ interface CartSummaryPanelProps {
  */
 const FREE_SHIPPING_THRESHOLD = 50; // Free shipping when subtotal >= $50 / Kostenloser Versand bei Zwischensumme >= $50
 const FREE_SHIPPING_PROGRESS_GOAL = 100; // Show progress toward $100 for "free shipping achievement" / Zeige Fortschritt zu $100 für "Kostenlos-Versand-Errungenschaft"
-const STANDARD_SHIPPING_COST = 5.99; // Standard shipping cost / Standard-Versandkosten
 
 // ============================================================================
 // Helper Functions / Hilfsfunktionen
@@ -97,7 +96,7 @@ export default function CartSummaryPanel({ className = '' }: CartSummaryPanelPro
    * Get cart state from CartContext
    * Hole Warenkorb-Zustand aus CartContext
    */
-  const { subtotal, total } = useCart();
+  const { subtotal, shipping, total } = useCart();
 
   /**
    * Get theme state for dark mode styling
@@ -116,12 +115,6 @@ export default function CartSummaryPanel({ className = '' }: CartSummaryPanelPro
   const qualifiesForFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
 
   /**
-   * Calculate shipping cost based on subtotal
-   * Berechne Versandkosten basierend auf Zwischensumme
-   */
-  const shipping = qualifiesForFreeShipping ? 0 : STANDARD_SHIPPING_COST;
-
-  /**
    * Calculate amount needed to reach free shipping threshold
    * Berechne Betrag, der benötigt wird, um Kostenlos-Versand-Schwellenwert zu erreichen
    */
@@ -138,6 +131,15 @@ export default function CartSummaryPanel({ className = '' }: CartSummaryPanelPro
   // ============================================================================
   // Event Handlers / Event-Handler
   // ============================================================================
+
+  /**
+   * Checkout disabled state for demo purposes
+   * Checkout deaktivierter Zustand für Demo-Zwecke
+   * 
+   * Set to true to disable checkout button until proper implementation.
+   * Auf true gesetzt, um Checkout-Button bis zur ordnungsgemäßen Implementierung zu deaktivieren.
+   */
+  const isCheckoutDisabled = true;
 
   /**
    * Handle checkout button click
@@ -360,7 +362,7 @@ export default function CartSummaryPanel({ className = '' }: CartSummaryPanelPro
       */}
       <button
         onClick={handleCheckout}
-        disabled={true}
+        disabled={isCheckoutDisabled}
         className={`
           w-full
           bg-primary text-white
@@ -370,7 +372,7 @@ export default function CartSummaryPanel({ className = '' }: CartSummaryPanelPro
           transition-all duration-200
           focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50
           ${
-            true // disabled condition / deaktivierte Bedingung
+            isCheckoutDisabled
               ? 'opacity-50 cursor-not-allowed'
               : 'hover:bg-primary-dark hover:shadow-lg active:scale-95'
           }
