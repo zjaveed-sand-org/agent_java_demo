@@ -220,6 +220,7 @@ export default function CartPage() {
               Primärer Call-to-Action-Button zur Navigation zur Produktseite.
             */}
             <button
+              type="button"
               onClick={handleContinueShopping}
               className="
                 bg-primary text-white
