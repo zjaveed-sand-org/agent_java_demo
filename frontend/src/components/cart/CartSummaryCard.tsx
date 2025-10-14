@@ -83,7 +83,7 @@ export default function CartSummaryCard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-6 pt-6 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}">
+      <div className={`mt-6 pt-6 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
         <h3 className={`text-sm font-semibold ${darkMode ? 'text-gray-400' : 'text-gray-600'} mb-3`}>
           💳 Quick Actions
         </h3>
