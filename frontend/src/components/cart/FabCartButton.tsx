@@ -1,5 +1,4 @@
 import { useCart } from '../../context/CartContext';
-import { useTheme } from '../../context/ThemeContext';
 
 interface FabCartButtonProps {
   onClick: () => void;
@@ -7,14 +6,11 @@ interface FabCartButtonProps {
 
 export default function FabCartButton({ onClick }: FabCartButtonProps) {
   const { totalItems } = useCart();
-  const { darkMode } = useTheme();
 
   return (
     <button
       onClick={onClick}
-      className={`fixed bottom-6 right-6 z-40 ${
-        darkMode ? 'bg-primary hover:bg-accent' : 'bg-primary hover:bg-accent'
-      } text-white rounded-full p-4 shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50`}
+      className="fixed bottom-6 right-6 z-40 bg-primary hover:bg-accent text-white rounded-full p-4 shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary focus:ring-opacity-50"
       aria-label={`Shopping cart with ${totalItems} items`}
     >
       <svg

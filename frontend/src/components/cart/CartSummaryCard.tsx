@@ -112,7 +112,7 @@ export default function CartSummaryCard({
         Proceed to Checkout
       </button>
 
-      <p className={`mt-4 text-xs text-center ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+      <p className="mt-4 text-xs text-center text-gray-500">
         Taxes calculated at checkout
       </p>
     </div>
