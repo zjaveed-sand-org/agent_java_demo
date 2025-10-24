@@ -16,7 +16,7 @@ export default function CartPreview({ isVisible }: CartPreviewProps) {
     <div
       className={`absolute right-0 mt-2 w-96 rounded-lg shadow-2xl ${
         darkMode ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'
-      } transition-all duration-300 transform origin-top-right z-50 animate-in slide-in-from-top-2`}
+      } transition-all duration-300 transform origin-top-right z-50`}
     >
       <div className="p-4">
         <h3

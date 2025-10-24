@@ -162,7 +162,7 @@ export default function Cart() {
                           </button>
                         </div>
 
-                        <p className={`text-sm mb-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'} line-clamp-2`}>
+                        <p className={`text-sm mb-4 ${darkMode ? 'text-gray-400' : 'text-gray-600'} overflow-hidden`} style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' } as React.CSSProperties}>
                           {item.description}
                         </p>
 
@@ -217,7 +217,7 @@ export default function Cart() {
                             </button>
 
                             {isExpanded && (
-                              <div className={`mt-4 p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} space-y-2 animate-in slide-in-from-top-2`}>
+                              <div className={`mt-4 p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} space-y-2 transition-all duration-300`}>
                                 <h4 className={`font-semibold mb-2 ${darkMode ? 'text-light' : 'text-gray-800'}`}>
                                   Supplier Information
                                 </h4>
