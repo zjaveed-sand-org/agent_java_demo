@@ -1,12 +1,26 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { useState } from 'react';
+import { useCart } from '../context/CartContext';
+import { useState, useEffect } from 'react';
+import CartPreview from './cart/CartPreview';
 
 export default function Navigation() {
   const { isLoggedIn, isAdmin, logout } = useAuth();
   const { darkMode, toggleTheme } = useTheme();
+  const { totalItems } = useCart();
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+  const [showCartPreview, setShowCartPreview] = useState(false);
+  const [cartBounce, setCartBounce] = useState(false);
+
+  // Trigger bounce animation when items are added
+  useEffect(() => {
+    if (totalItems > 0) {
+      setCartBounce(true);
+      const timer = setTimeout(() => setCartBounce(false), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [totalItems]);
 
   return (
     <nav className={`${darkMode ? 'bg-dark/95' : 'bg-white/95'} backdrop-blur-sm fixed w-full z-50 shadow-md transition-colors duration-300`}>
@@ -68,6 +82,71 @@ export default function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            {/* Cart Icon with Preview */}
+            <div
+              className="relative hidden md:block"
+              onMouseEnter={() => setShowCartPreview(true)}
+              onMouseLeave={() => setShowCartPreview(false)}
+            >
+              <Link
+                to="/cart"
+                className={`relative p-2 rounded-full transition-all duration-300 ${
+                  cartBounce ? 'animate-bounce' : ''
+                } ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`}
+                aria-label={`Shopping cart with ${totalItems} items`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`h-6 w-6 ${darkMode ? 'text-light' : 'text-gray-700'} transition-colors`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                  />
+                </svg>
+                {totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-in zoom-in-50 shadow-lg">
+                    {totalItems > 99 ? '99+' : totalItems}
+                  </span>
+                )}
+              </Link>
+              <CartPreview isVisible={showCartPreview} />
+            </div>
+            
+            {/* Mobile Cart Icon (no preview) */}
+            <Link
+              to="/cart"
+              className={`md:hidden relative p-2 rounded-full transition-all duration-300 ${
+                cartBounce ? 'animate-bounce' : ''
+              } ${darkMode ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`}
+              aria-label={`Shopping cart with ${totalItems} items`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className={`h-6 w-6 ${darkMode ? 'text-light' : 'text-gray-700'} transition-colors`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                />
+              </svg>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center animate-in zoom-in-50 shadow-lg">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
+            </Link>
+
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full focus:outline-none transition-colors"
