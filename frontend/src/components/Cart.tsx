@@ -1,6 +1,6 @@
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const FREE_SHIPPING_THRESHOLD = 50;
 
@@ -8,33 +8,58 @@ export default function Cart() {
   const { items, updateQuantity, removeFromCart, clearCart, getTotalPrice } = useCart();
   const { darkMode } = useTheme();
   const [animatingItems, setAnimatingItems] = useState<Set<number>>(new Set());
+  const timeoutsRef = useRef<Map<number, NodeJS.Timeout>>(new Map());
   
   const totalPrice = getTotalPrice();
   const shippingProgress = Math.min((totalPrice / FREE_SHIPPING_THRESHOLD) * 100, 100);
   const needsForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - totalPrice);
 
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      timeoutsRef.current.forEach(timeout => clearTimeout(timeout));
+      timeoutsRef.current.clear();
+    };
+  }, []);
+
   const handleQuantityChange = (productId: number, newQuantity: number) => {
     setAnimatingItems(prev => new Set(prev).add(productId));
     updateQuantity(productId, newQuantity);
-    setTimeout(() => {
+    
+    // Clear existing timeout for this product
+    const existingTimeout = timeoutsRef.current.get(productId);
+    if (existingTimeout) clearTimeout(existingTimeout);
+    
+    const timeout = setTimeout(() => {
       setAnimatingItems(prev => {
         const next = new Set(prev);
         next.delete(productId);
         return next;
       });
+      timeoutsRef.current.delete(productId);
     }, 300);
+    
+    timeoutsRef.current.set(productId, timeout);
   };
 
   const handleRemove = (productId: number) => {
     setAnimatingItems(prev => new Set(prev).add(productId));
-    setTimeout(() => {
+    
+    // Clear existing timeout for this product
+    const existingTimeout = timeoutsRef.current.get(productId);
+    if (existingTimeout) clearTimeout(existingTimeout);
+    
+    const timeout = setTimeout(() => {
       removeFromCart(productId);
       setAnimatingItems(prev => {
         const next = new Set(prev);
         next.delete(productId);
         return next;
       });
+      timeoutsRef.current.delete(productId);
     }, 200);
+    
+    timeoutsRef.current.set(productId, timeout);
   };
 
   if (items.length === 0) {

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 export interface CartItem {
   productId: number;
@@ -63,14 +63,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return items.reduce((total, item) => total + item.quantity, 0);
   };
 
-  const getTotalPrice = () => {
-    return items.reduce((total, item) => {
+  const getTotalPrice = useMemo(() => {
+    return () => items.reduce((total, item) => {
       const itemPrice = item.discount 
         ? item.price * (1 - item.discount) 
         : item.price;
       return total + itemPrice * item.quantity;
     }, 0);
-  };
+  }, [items]);
 
   return (
     <CartContext.Provider
