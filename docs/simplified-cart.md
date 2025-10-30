@@ -286,4 +286,3 @@ Possible improvements (not currently implemented):
 
 - [React Context API](https://react.dev/reference/react/useContext)
 - [React useState Hook](https://react.dev/reference/react/useState)
-- Issue: [🚀 Create Simplified Fast Cart Version](https://github.com/zjaveed-sand-org/agent_java_demo/issues/XX)
