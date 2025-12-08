@@ -1,3 +1,8 @@
+
+---
+applyTo: "api/**/*"
+---
+
 # Java API Development Guidelines
 
 ## Project Information
