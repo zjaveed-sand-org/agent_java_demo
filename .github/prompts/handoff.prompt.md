@@ -1,5 +1,5 @@
 ---
-mode: 'agent'
+agent: 'Plan'
 description: 'Scans the current chat history, strips noise, and writes a concise handoff.md for the next developer.'
 tools: ['edit', 'search']
 ---
