@@ -5,7 +5,7 @@
 
 Welcome to the OctoCAT Supply Website - your go-to demo for showcasing the incredible capabilities of GitHub Copilot, GHAS, and the power of AI-assisted development!
 
-## ✨ What Makes This Demo Special
+## ✨ What Makes This Demo so Special
 
 This isn't just another demo app - it's a carefully crafted showcase that demonstrates the full spectrum of GitHub's AI capabilities:
 
