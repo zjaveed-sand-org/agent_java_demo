@@ -3,7 +3,7 @@
 
 ![OctoCAT Supply](./frontend/public/hero.png)
 
-Welcome to the OctoCAT Supply Website - your go-to demo for showcasing the incredible capabilities of GitHub Copilot, GHAS, and the power of AI-assisted development!
+Zeeshan Welcome to the OctoCAT Supply Website - your go-to demo for showcasing the incredible capabilities of GitHub Copilot, GHAS, and the power of AI-assisted development!
 
 ## ✨ What Makes This Demo so Special
 
