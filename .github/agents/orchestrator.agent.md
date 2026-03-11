@@ -1,6 +1,6 @@
 ---
 name: Orchestrator
-description: Sonnet, Codex, Gemini
+description: Sonnet, Opus, Gemini
 model: Claude Opus 4.6 (copilot)
 tools: ['read/readFile', 'agent', 'vscode/memory']
 ---
