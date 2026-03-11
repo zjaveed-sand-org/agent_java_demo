@@ -8,11 +8,11 @@ This repo is hosted in GitHub:
 
 ## Instructions
 
-Always include and follow all instruction files from the `.github/instructions/` folder:
-- [API Instructions](.github/instructions/api.instructions.md)
-- [Documentation Instructions](.github/instructions/docs.instructions.md)
-- [Frontend Instructions](.github/instructions/frontend.instructions.md)
-- [Agent Instructions](.github/instructions/AGENTS.md)
+Always include and follow all instruction files from the `instructions/` folder:
+- [API Instructions](instructions/api.instructions.md)
+- [Documentation Instructions](instructions/docs.instructions.md)
+- [Frontend Instructions](instructions/frontend.instructions.md)
+- [Agent Instructions](instructions/AGENTS.md)
 
 These instruction files must be read and applied before making any code changes or creating documentation.
 
