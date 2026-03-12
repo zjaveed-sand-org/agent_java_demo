@@ -36,6 +36,17 @@ erDiagram
 - **Backend**: Java with SpringBoot
 - **DevOps**: Docker
 
+## ✨ Features
+
+### 🛒 Simplified Fast Cart
+A lightweight, performance-optimized shopping cart implementation:
+- Session-only cart (no localStorage)
+- Dropdown/modal interface
+- Real-time item count badge
+- Inline quantity controls
+- Dark/light mode support
+- [View detailed documentation](./docs/simplified-cart.md)
+
 ## 🎯 Key Demo Scenarios
 
 1. **Vibe Coding**
@@ -89,6 +100,7 @@ To showcase extended capabilities:
 
 - [Detailed Architecture](./docs/architecture.md)
 - [Complete Demo Script](./docs/demo-script.md)
+- [Simplified Cart Documentation](./docs/simplified-cart.md)
 
 ## 🎓 Pro Tips for Solution Engineers
 
