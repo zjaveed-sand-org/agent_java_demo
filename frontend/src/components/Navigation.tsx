@@ -1,12 +1,28 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { useState } from 'react';
+import { useCart } from '../context/CartContext';
+import { useState, useEffect } from 'react';
 
 export default function Navigation() {
   const { isLoggedIn, isAdmin, logout } = useAuth();
   const { darkMode, toggleTheme } = useTheme();
+  const { getTotalItems, getTotalPrice } = useCart();
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+  const [cartBounce, setCartBounce] = useState(false);
+  const [prevItemCount, setPrevItemCount] = useState(0);
+  
+  const itemCount = getTotalItems();
+  const totalPrice = getTotalPrice();
+  const isPremium = totalPrice > 100;
+
+  useEffect(() => {
+    if (itemCount > prevItemCount) {
+      setCartBounce(true);
+      setTimeout(() => setCartBounce(false), 500);
+    }
+    setPrevItemCount(itemCount);
+  }, [itemCount, prevItemCount]);
 
   return (
     <nav className={`${darkMode ? 'bg-dark/95' : 'bg-white/95'} backdrop-blur-sm fixed w-full z-50 shadow-md transition-colors duration-300`}>
@@ -68,6 +84,52 @@ export default function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            {/* Cart Icon with Material Design Badge */}
+            <Link 
+              to="/cart" 
+              className="relative p-2 rounded-full hover:bg-primary/10 transition-all duration-300 group"
+              aria-label={`Shopping cart with ${itemCount} items`}
+            >
+              <svg 
+                className={`w-6 h-6 ${darkMode ? 'text-light' : 'text-gray-700'} group-hover:text-primary transition-colors duration-300 ${cartBounce ? 'animate-bounce' : ''}`}
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              
+              {itemCount > 0 && (
+                <span 
+                  className={`absolute -top-1 -right-1 ${
+                    isPremium 
+                      ? 'bg-gradient-to-br from-yellow-400 to-orange-500 ring-2 ring-yellow-400/50' 
+                      : 'bg-gradient-to-br from-primary to-accent ring-2 ring-primary/50'
+                  } text-white text-xs font-bold rounded-full h-5 min-w-[1.25rem] flex items-center justify-center px-1 shadow-lg transform transition-all duration-300 ${
+                    cartBounce ? 'scale-125' : 'scale-100'
+                  }`}
+                  style={{
+                    animation: cartBounce ? 'ripple 0.6s ease-out' : 'none'
+                  }}
+                >
+                  {itemCount > 99 ? '99+' : itemCount}
+                </span>
+              )}
+              
+              {/* Ripple Effect Container */}
+              {cartBounce && (
+                <span 
+                  className={`absolute -top-1 -right-1 ${
+                    isPremium ? 'bg-yellow-400' : 'bg-primary'
+                  } rounded-full h-5 w-5 opacity-75`}
+                  style={{
+                    animation: 'ripple-expand 0.6s ease-out'
+                  }}
+                ></span>
+              )}
+            </Link>
+
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full focus:outline-none transition-colors"
@@ -107,6 +169,44 @@ export default function Navigation() {
           </div>
         </div>
       </div>
+      
+      <style>{`
+        @keyframes ripple {
+          0% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.2);
+            opacity: 0.8;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        
+        @keyframes ripple-expand {
+          0% {
+            transform: scale(1);
+            opacity: 0.75;
+          }
+          100% {
+            transform: scale(2.5);
+            opacity: 0;
+          }
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+          .animate-bounce {
+            animation: none;
+          }
+          [style*="animation: ripple"],
+          [style*="animation: ripple-expand"] {
+            animation: none !important;
+          }
+        }
+      `}</style>
     </nav>
   );
 }
