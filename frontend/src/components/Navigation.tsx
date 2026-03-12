@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useCart } from '../context/CartContext';
 import { useState } from 'react';
 
 export default function Navigation() {
   const { isLoggedIn, isAdmin, logout } = useAuth();
   const { darkMode, toggleTheme } = useTheme();
+  const { getItemCount } = useCart();
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+  const itemCount = getItemCount();
 
   return (
     <nav className={`${darkMode ? 'bg-dark/95' : 'bg-white/95'} backdrop-blur-sm fixed w-full z-50 shadow-md transition-colors duration-300`}>
@@ -68,6 +71,32 @@ export default function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            {/* Modern Cart Icon with Badge */}
+            <Link 
+              to="/cart" 
+              className="relative group p-2 rounded-full hover:bg-primary/10 transition-all duration-300"
+              aria-label={`Shopping cart with ${itemCount} items`}
+            >
+              <svg 
+                className={`w-6 h-6 ${darkMode ? 'text-light' : 'text-gray-700'} group-hover:text-primary transition-colors duration-300`}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" 
+                />
+              </svg>
+              {itemCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gradient-to-r from-primary to-accent text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center shadow-lg animate-pulse">
+                  {itemCount > 99 ? '99+' : itemCount}
+                </span>
+              )}
+            </Link>
+            
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full focus:outline-none transition-colors"
