@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useState } from 'react';
+import CartIcon from './cart/CartIcon';
 
 export default function Navigation() {
   const { isLoggedIn, isAdmin, logout } = useAuth();
@@ -68,6 +69,7 @@ export default function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            <CartIcon />
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full focus:outline-none transition-colors"
