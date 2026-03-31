@@ -1,0 +1,11 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "./.github/hooks/scripts/confirm-external-mcp.sh",
+        "timeout": 10
+      }
+    ]
+  }
+}
