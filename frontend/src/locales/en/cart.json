@@ -1,0 +1,43 @@
+{
+  "pageTitle": "Your Cart",
+  "empty": {
+    "title": "Your cart is empty",
+    "description": "Add a few smart cat essentials to get started."
+  },
+  "table": {
+    "item": "Item",
+    "unitPrice": "Unit Price",
+    "quantity": "Quantity",
+    "lineTotal": "Line Total",
+    "actions": "Actions"
+  },
+  "summary": {
+    "title": "Order Summary",
+    "subtotal": "Subtotal",
+    "discounts": "Discounts",
+    "total": "Grand Total"
+  },
+  "buttons": {
+    "clearCart": "Clear Cart",
+    "checkout": "Checkout",
+    "removeItem": "Remove {{name}}",
+    "decreaseQuantity": "Decrease quantity of {{name}}",
+    "increaseQuantity": "Increase quantity of {{name}}"
+  },
+  "labels": {
+    "quantityInput": "Quantity for {{name}}",
+    "productImage": "Image of {{name}}"
+  },
+  "messages": {
+    "itemRemoved": "Removed {{name}} from your cart.",
+    "checkoutPlaceholder": "Checkout is not implemented yet.",
+    "cartCleared": "Your cart has been cleared.",
+    "syncError": "Cart sync error: {{message}}"
+  },
+  "confirmations": {
+    "removeItem": "Remove {{name}} from your cart?"
+  },
+  "status": {
+    "syncing": "Syncing cart..."
+  }
+}

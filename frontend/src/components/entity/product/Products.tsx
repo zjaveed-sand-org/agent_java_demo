@@ -1,22 +1,14 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useQuery } from 'react-query';
+import { useTranslation } from 'react-i18next';
 import { api } from '../../../api/config';
+import { useCart } from '../../../context/CartContext';
 import { useTheme } from '../../../context/ThemeContext';
+import { IProduct, getDiscountedPrice } from '../../../types/product';
+import { formatCurrency } from '../../../utils/formatCurrency';
 
-interface Product {
-  productId: number;
-  name: string;
-  description: string;
-  price: number;
-  imgName: string;
-  sku: string;
-  unit: string;
-  supplierId: number;
-  discount?: number;
-}
-
-const fetchProducts = async (): Promise<Product[]> => {
+const fetchProducts = async (): Promise<IProduct[]> => {
   const { data } = await axios.get(`${api.baseURL}${api.endpoints.products}`);
   return data;
 };
@@ -24,10 +16,13 @@ const fetchProducts = async (): Promise<Product[]> => {
 export default function Products() {
   const [quantities, setQuantities] = useState<Record<number, number>>({});
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [statusMessage, setStatusMessage] = useState('');
   const { data: products, isLoading, error } = useQuery('products', fetchProducts);
+  const { addToCart } = useCart();
   const { darkMode } = useTheme();
+  const { t, i18n } = useTranslation(['products', 'common']);
 
   const filteredProducts = products?.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,19 +36,26 @@ export default function Products() {
     }));
   };
 
-  const handleAddToCart = (productId: number) => {
-    const quantity = quantities[productId] || 0;
+  const handleAddToCart = async (product: IProduct) => {
+    const quantity = quantities[product.productId] || 0;
     if (quantity > 0) {
-      // TODO: Implement cart functionality
-      alert(`Added ${quantity} items to cart`);
-      setQuantities(prev => ({
-        ...prev,
-        [productId]: 0
-      }));
+      try {
+        await addToCart(product, quantity);
+        setStatusMessage(t('products:messages.addedToCart', {
+          quantity,
+          name: product.name,
+        }));
+        setQuantities(prev => ({
+          ...prev,
+          [product.productId]: 0
+        }));
+      } catch {
+        setStatusMessage(t('products:messages.addFailed', { name: product.name }));
+      }
     }
   };
 
-  const handleProductClick = (product: Product) => {
+  const handleProductClick = (product: IProduct) => {
     setSelectedProduct(product);
     setShowModal(true);
   };
@@ -64,6 +66,7 @@ export default function Products() {
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-primary"></div>
+            <span className="sr-only">{t('common:status.loading')}</span>
           </div>
         </div>
       </div>
@@ -74,7 +77,7 @@ export default function Products() {
     return (
       <div className={`min-h-screen ${darkMode ? 'bg-dark' : 'bg-gray-100'} pt-20 px-4 transition-colors duration-300`}>
         <div className="max-w-7xl mx-auto">
-          <div className="text-red-500 text-center">Failed to fetch products</div>
+          <div className="text-red-500 text-center">{t('products:errors.fetchFailed')}</div>
         </div>
       </div>
     );
@@ -84,16 +87,21 @@ export default function Products() {
     <div className={`min-h-screen ${darkMode ? 'bg-dark' : 'bg-gray-100'} pt-20 pb-16 px-4 transition-colors duration-300`}>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col space-y-6">
-          <h1 className={`text-3xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'} transition-colors duration-300`}>Products</h1>
+          <h1 className={`text-3xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'} transition-colors duration-300`}>{t('products:pageTitle')}</h1>
+          {statusMessage && (
+            <div className="rounded-lg border border-primary/40 bg-primary/10 px-4 py-3 text-sm text-primary" role="status" aria-live="polite">
+              {statusMessage}
+            </div>
+          )}
           
           <div className="relative">
             <input
               type="text"
-              placeholder="Search products..."
+              placeholder={t('products:searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`w-full px-4 py-2 ${darkMode ? 'bg-gray-800 text-light border-gray-700' : 'bg-white text-gray-800 border-gray-300'} rounded-lg border focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-colors duration-300`}
-              aria-label="Search products"
+              aria-label={t('products:searchLabel')}
             />
             <svg 
               className={`absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 ${darkMode ? 'text-gray-400' : 'text-gray-500'} transition-colors duration-300`}
@@ -122,7 +130,7 @@ export default function Products() {
                   />
                   {product.discount && (
                     <div className="absolute top-8 left-0 bg-primary text-white px-3 py-1 -rotate-90 transform -translate-x-5 shadow-md">
-                      {Math.round(product.discount * 100)}% OFF
+                      {t('products:labels.percentOff', { percent: Math.round(product.discount * 100) })}
                     </div>
                   )}
                 </div>
@@ -134,11 +142,11 @@ export default function Products() {
                     <div className="flex justify-between items-center">
                       {product.discount ? (
                         <div>
-                          <span className="text-gray-500 line-through text-sm mr-2">${product.price.toFixed(2)}</span>
-                          <span className="text-primary text-xl font-bold">${(product.price * (1 - product.discount)).toFixed(2)}</span>
+                          <span className="text-gray-500 line-through text-sm mr-2">{formatCurrency(product.price, i18n.language)}</span>
+                          <span className="text-primary text-xl font-bold">{formatCurrency(getDiscountedPrice(product), i18n.language)}</span>
                         </div>
                       ) : (
-                        <span className="text-primary text-xl font-bold">${product.price.toFixed(2)}</span>
+                        <span className="text-primary text-xl font-bold">{formatCurrency(product.price, i18n.language)}</span>
                       )}
                     </div>
                     
@@ -147,14 +155,14 @@ export default function Products() {
                         <button 
                           onClick={() => handleQuantityChange(product.productId, -1)}
                           className={`w-8 h-8 flex items-center justify-center ${darkMode ? 'text-light' : 'text-gray-700'} hover:text-primary transition-colors duration-300`}
-                          aria-label={`Decrease quantity of ${product.name}`}
+                          aria-label={t('products:buttons.decreaseQuantity', { name: product.name })}
                           id={`decrease-qty-${product.productId}`}
                         >
                           <span aria-hidden="true">-</span>
                         </button>
                         <span 
                           className={`${darkMode ? 'text-light' : 'text-gray-800'} min-w-[2rem] text-center transition-colors duration-300`}
-                          aria-label={`Quantity of ${product.name}`}
+                          aria-label={t('products:labels.quantityOfProduct', { name: product.name })}
                           id={`qty-${product.productId}`}
                         >
                           {quantities[product.productId] || 0}
@@ -162,24 +170,24 @@ export default function Products() {
                         <button 
                           onClick={() => handleQuantityChange(product.productId, 1)}
                           className={`w-8 h-8 flex items-center justify-center ${darkMode ? 'text-light' : 'text-gray-700'} hover:text-primary transition-colors duration-300`}
-                          aria-label={`Increase quantity of ${product.name}`}
+                          aria-label={t('products:buttons.increaseQuantity', { name: product.name })}
                           id={`increase-qty-${product.productId}`}
                         >
                           <span aria-hidden="true">+</span>
                         </button>
                       </div>
                       <button 
-                        onClick={() => handleAddToCart(product.productId)}
+                        onClick={() => void handleAddToCart(product)}
                         className={`px-4 py-2 rounded-lg transition-colors ${
                           quantities[product.productId] 
                             ? 'bg-primary hover:bg-accent text-white' 
                             : `${darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-200 text-gray-500'} cursor-not-allowed`
                         }`}
                         disabled={!quantities[product.productId]}
-                        aria-label={`Add ${quantities[product.productId] || 0} ${product.name} to cart`}
+                        aria-label={t('products:buttons.addToCart')}
                         id={`add-to-cart-${product.productId}`}
                       >
-                        Add to Cart
+                        {t('products:buttons.addToCart')}
                       </button>
                     </div>
                   </div>
@@ -201,6 +209,7 @@ export default function Products() {
               <button 
                 onClick={() => setShowModal(false)}
                 className={`${darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-black'} transition-colors duration-300`}
+                aria-label={t('products:modal.closeLabel')}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />

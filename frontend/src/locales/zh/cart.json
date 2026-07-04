@@ -1,0 +1,43 @@
+{
+  "pageTitle": "您的购物车",
+  "empty": {
+    "title": "您的购物车为空",
+    "description": "先添加一些智能猫咪用品开始购物吧。"
+  },
+  "table": {
+    "item": "商品",
+    "unitPrice": "单价",
+    "quantity": "数量",
+    "lineTotal": "小计",
+    "actions": "操作"
+  },
+  "summary": {
+    "title": "订单摘要",
+    "subtotal": "商品小计",
+    "discounts": "优惠",
+    "total": "总计"
+  },
+  "buttons": {
+    "clearCart": "清空购物车",
+    "checkout": "结账",
+    "removeItem": "移除 {{name}}",
+    "decreaseQuantity": "减少 {{name}} 的数量",
+    "increaseQuantity": "增加 {{name}} 的数量"
+  },
+  "labels": {
+    "quantityInput": "{{name}} 的数量",
+    "productImage": "{{name}} 的图片"
+  },
+  "messages": {
+    "itemRemoved": "已将 {{name}} 从购物车中移除。",
+    "checkoutPlaceholder": "结账功能尚未实现。",
+    "cartCleared": "您的购物车已清空。",
+    "syncError": "购物车同步错误：{{message}}"
+  },
+  "confirmations": {
+    "removeItem": "要将 {{name}} 从购物车中移除吗？"
+  },
+  "status": {
+    "syncing": "正在同步购物车..."
+  }
+}

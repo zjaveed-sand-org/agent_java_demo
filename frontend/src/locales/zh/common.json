@@ -1,0 +1,50 @@
+{
+  "brand": {
+    "tagline": "AI 驱动的智能猫咪科技",
+    "logoAlt": "Copilot 图标"
+  },
+  "nav": {
+    "home": "首页",
+    "products": "产品",
+    "about": "关于我们",
+    "admin": "管理",
+    "manageProducts": "管理产品",
+    "adminTag": "管理员",
+    "welcome": "欢迎！",
+    "logout": "退出登录",
+    "login": "登录",
+    "cart": "购物车",
+    "cartWithCount": "购物车（{{count}} 件）",
+    "themeToggle": "切换深色或浅色模式",
+    "language": "语言"
+  },
+  "footer": {
+    "aboutTitle": "关于",
+    "aboutText": "OctoCAT Supply 是面向猫咪伙伴的 AI 智能产品领先供应商。我们的创新技术通过智能监测、互动娱乐和个性化舒适方案提升猫咪的幸福感。",
+    "accountTitle": "账户",
+    "myCart": "我的购物车",
+    "checkout": "结账",
+    "shoppingDetails": "购物详情",
+    "order": "订单",
+    "helpCenter": "帮助中心",
+    "helpfulLinksTitle": "实用链接",
+    "services": "服务",
+    "supports": "支持",
+    "feedback": "反馈",
+    "termsAndConditions": "条款与条件",
+    "privacyPolicy": "隐私政策",
+    "socialMediaTitle": "社交媒体",
+    "twitter": "Twitter",
+    "facebook": "Facebook",
+    "youtube": "YouTube",
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "copyright": "Copyright © 2025 OctoCAT Supply。保留所有权利"
+  },
+  "actions": {
+    "continueShopping": "继续购物"
+  },
+  "status": {
+    "loading": "加载中..."
+  }
+}
