@@ -34,6 +34,9 @@
     "cartCleared": "Ihr Warenkorb wurde geleert.",
     "syncError": "Synchronisierungsfehler im Warenkorb: {{message}}"
   },
+  "errors": {
+    "unexpected": "Unerwarteter Warenkorbfehler"
+  },
   "confirmations": {
     "removeItem": "{{name}} aus dem Warenkorb entfernen?"
   },

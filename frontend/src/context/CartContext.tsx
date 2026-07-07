@@ -49,28 +49,41 @@ const getSessionId = (): string => {
 };
 
 const getStoredCartState = (sessionId: string): ICartState => {
+  const emptyCartState = createEmptyCartState(sessionId);
+
   if (typeof window === 'undefined') {
-    return createEmptyCartState(sessionId);
+    return emptyCartState;
   }
 
   const storedCart = window.localStorage.getItem(CART_STORAGE_KEY);
   if (!storedCart) {
-    return createEmptyCartState(sessionId);
+    return emptyCartState;
   }
 
   try {
     const parsedCart = JSON.parse(storedCart) as Partial<ICartState>;
     if (!Array.isArray(parsedCart.items)) {
-      return createEmptyCartState(sessionId);
+      return emptyCartState;
+    }
+
+    if (parsedCart.sessionId !== sessionId) {
+      return {
+        ...emptyCartState,
+        items: parsedCart.items,
+        subtotal: parsedCart.subtotal ?? 0,
+        discountTotal: parsedCart.discountTotal ?? 0,
+        total: parsedCart.total ?? 0,
+        itemCount: parsedCart.itemCount ?? 0,
+      };
     }
 
     return {
-      ...createEmptyCartState(sessionId),
+      ...emptyCartState,
       ...parsedCart,
       sessionId,
     };
   } catch {
-    return createEmptyCartState(sessionId);
+    return emptyCartState;
   }
 };
 
@@ -86,7 +99,7 @@ const getErrorMessage = (error: unknown): string => {
     return error.message;
   }
 
-  return 'Unexpected cart error';
+  return 'cart.errors.unexpected';
 };
 
 const CartContext = createContext<ICartContextType | null>(null);

@@ -34,6 +34,9 @@
     "cartCleared": "Your cart has been cleared.",
     "syncError": "Cart sync error: {{message}}"
   },
+  "errors": {
+    "unexpected": "Unexpected cart error"
+  },
   "confirmations": {
     "removeItem": "Remove {{name}} from your cart?"
   },

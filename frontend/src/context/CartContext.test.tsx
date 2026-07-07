@@ -108,6 +108,31 @@ describe('CartContext', () => {
     expect(storedCart).toContain('"itemCount":2');
   });
 
+  it('keeps the new session metadata when restoring cart items from a different session', async () => {
+    window.localStorage.setItem('octocat-cart-session-id', sessionId);
+    window.localStorage.setItem('octocat-cart-state', JSON.stringify({
+      ...populatedCart(1),
+      sessionId: 'stale-session',
+      cartId: 'cart-stale-session',
+      createdAt: '2026-07-01T00:00:00Z',
+      updatedAt: '2026-07-01T00:00:00Z',
+    }));
+
+    render(
+      <CartProvider>
+        <CartConsumer />
+      </CartProvider>,
+    );
+
+    await waitFor(() => {
+      const storedCart = JSON.parse(window.localStorage.getItem('octocat-cart-state') ?? '{}') as ICartState;
+      expect(storedCart.sessionId).toBe(sessionId);
+      expect(storedCart.cartId).toBe(`cart-${sessionId}`);
+      expect(storedCart.createdAt).not.toBe('2026-07-01T00:00:00Z');
+      expect(storedCart.updatedAt).not.toBe('2026-07-01T00:00:00Z');
+    });
+  });
+
   it('updates item quantities through the shared context', async () => {
     mockedCartApi.fetchCart.mockResolvedValue(populatedCart(2));
 

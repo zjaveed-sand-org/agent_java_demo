@@ -34,6 +34,9 @@
     "cartCleared": "Su carrito se ha vaciado.",
     "syncError": "Error de sincronización del carrito: {{message}}"
   },
+  "errors": {
+    "unexpected": "Error inesperado del carrito"
+  },
   "confirmations": {
     "removeItem": "¿Eliminar {{name}} del carrito?"
   },

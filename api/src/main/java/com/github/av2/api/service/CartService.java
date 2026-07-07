@@ -27,58 +27,67 @@ public class CartService {
         this.productService = productService;
     }
 
-    public synchronized CartResponse getCart(String sessionId) {
-        return toResponse(getOrCreateCart(sessionId));
-    }
-
-    public synchronized CartResponse addItem(String sessionId, CartItemRequest request) {
-        validateQuantity(request.getQuantity());
-
+    public CartResponse getCart(String sessionId) {
         Cart cart = getOrCreateCart(sessionId);
-        Product product = findProductOrThrow(request.getProductId());
-        CartItem existingItem = cart.getItems().stream()
-                .filter(item -> item.getProductId().equals(product.getProductId()))
-                .findFirst()
-                .orElse(null);
-
-        String updatedAt = Instant.now().toString();
-        if (existingItem != null) {
-            existingItem.setQuantity(existingItem.getQuantity() + request.getQuantity());
-        } else {
-            cart.getItems().add(new CartItem(
-                    cartItemSequence.getAndIncrement(),
-                    cart.getCartId(),
-                    product.getProductId(),
-                    request.getQuantity(),
-                    updatedAt
-            ));
+        synchronized (cart) {
+            return toResponse(cart);
         }
-
-        cart.setUpdatedAt(updatedAt);
-        return toResponse(cart);
     }
 
-    public synchronized CartResponse updateItem(String sessionId, Integer itemId, CartItemQuantityUpdateRequest request) {
+    public CartResponse addItem(String sessionId, CartItemRequest request) {
         validateQuantity(request.getQuantity());
 
         Cart cart = getOrCreateCart(sessionId);
-        CartItem item = findCartItemOrThrow(cart, itemId);
-        item.setQuantity(request.getQuantity());
-        cart.setUpdatedAt(Instant.now().toString());
+        synchronized (cart) {
+            Product product = findProductOrThrow(request.getProductId());
+            CartItem existingItem = cart.getItems().stream()
+                    .filter(item -> item.getProductId().equals(product.getProductId()))
+                    .findFirst()
+                    .orElse(null);
 
-        return toResponse(cart);
+            String updatedAt = Instant.now().toString();
+            if (existingItem != null) {
+                existingItem.setQuantity(existingItem.getQuantity() + request.getQuantity());
+            } else {
+                cart.getItems().add(new CartItem(
+                        cartItemSequence.getAndIncrement(),
+                        cart.getCartId(),
+                        product.getProductId(),
+                        request.getQuantity(),
+                        updatedAt
+                ));
+            }
+
+            cart.setUpdatedAt(updatedAt);
+            return toResponse(cart);
+        }
     }
 
-    public synchronized CartResponse removeItem(String sessionId, Integer itemId) {
+    public CartResponse updateItem(String sessionId, Integer itemId, CartItemQuantityUpdateRequest request) {
+        validateQuantity(request.getQuantity());
+
         Cart cart = getOrCreateCart(sessionId);
-        CartItem item = findCartItemOrThrow(cart, itemId);
-        cart.getItems().remove(item);
-        cart.setUpdatedAt(Instant.now().toString());
+        synchronized (cart) {
+            CartItem item = findCartItemOrThrow(cart, itemId);
+            item.setQuantity(request.getQuantity());
+            cart.setUpdatedAt(Instant.now().toString());
 
-        return toResponse(cart);
+            return toResponse(cart);
+        }
     }
 
-    public synchronized CartResponse clearCart(String sessionId) {
+    public CartResponse removeItem(String sessionId, Integer itemId) {
+        Cart cart = getOrCreateCart(sessionId);
+        synchronized (cart) {
+            CartItem item = findCartItemOrThrow(cart, itemId);
+            cart.getItems().remove(item);
+            cart.setUpdatedAt(Instant.now().toString());
+
+            return toResponse(cart);
+        }
+    }
+
+    public CartResponse clearCart(String sessionId) {
         Cart emptyCart = createCart(validateSessionId(sessionId));
         carts.put(emptyCart.getSessionId(), emptyCart);
         return toResponse(emptyCart);

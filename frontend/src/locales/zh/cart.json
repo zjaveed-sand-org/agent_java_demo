@@ -34,6 +34,9 @@
     "cartCleared": "您的购物车已清空。",
     "syncError": "购物车同步错误：{{message}}"
   },
+  "errors": {
+    "unexpected": "购物车出现未知错误"
+  },
   "confirmations": {
     "removeItem": "要将 {{name}} 从购物车中移除吗？"
   },

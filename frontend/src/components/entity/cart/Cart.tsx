@@ -10,6 +10,9 @@ export default function Cart() {
   const { darkMode } = useTheme();
   const { t, i18n } = useTranslation(['cart', 'common']);
   const [statusMessage, setStatusMessage] = useState('');
+  const localizedSyncError = syncError?.startsWith('cart.')
+    ? t(syncError)
+    : syncError;
 
   const handleQuantityInput = async (productId: number, event: ChangeEvent<HTMLInputElement>) => {
     const nextQuantity = Number.parseInt(event.target.value, 10);
@@ -77,7 +80,7 @@ export default function Cart() {
 
         {syncError && (
           <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-500" role="alert">
-            {t('cart:messages.syncError', { message: syncError })}
+            {t('cart:messages.syncError', { message: localizedSyncError })}
           </div>
         )}
 
