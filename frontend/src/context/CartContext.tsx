@@ -117,6 +117,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [syncError, setSyncError] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const initialItemsRef = useRef<ICartItem[]>(cart.items);
+  const syncRequestIdRef = useRef(0);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -131,43 +132,61 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   }, [sessionId]);
 
+  const beginSyncRequest = useCallback(() => {
+    const requestId = syncRequestIdRef.current + 1;
+    syncRequestIdRef.current = requestId;
+    setIsSyncing(true);
+    setSyncError(null);
+    return requestId;
+  }, []);
+
+  const isActiveSyncRequest = useCallback((requestId: number) => syncRequestIdRef.current === requestId, []);
+
+  const finishSyncRequest = useCallback((requestId: number) => {
+    if (syncRequestIdRef.current === requestId) {
+      setIsSyncing(false);
+    }
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
     const initializeCart = async () => {
-      setIsSyncing(true);
-      setSyncError(null);
+      const requestId = beginSyncRequest();
 
       try {
         const serverCart = await fetchCart(sessionId);
-        if (cancelled) {
+        if (cancelled || !isActiveSyncRequest(requestId)) {
           return;
         }
 
         if (serverCart.items.length === 0 && initialItemsRef.current.length > 0) {
           let hydratedCart = serverCart;
           for (const item of initialItemsRef.current) {
+            if (cancelled || !isActiveSyncRequest(requestId)) {
+              return;
+            }
             hydratedCart = await addCartItem(sessionId, {
               productId: item.productId,
               quantity: item.quantity,
             });
           }
 
-          if (!cancelled) {
+          if (!cancelled && isActiveSyncRequest(requestId)) {
             applyCart(hydratedCart);
           }
           return;
         }
 
-        applyCart(serverCart);
+        if (isActiveSyncRequest(requestId)) {
+          applyCart(serverCart);
+        }
       } catch (error) {
-        if (!cancelled) {
+        if (!cancelled && isActiveSyncRequest(requestId)) {
           setSyncError(getErrorMessage(error));
         }
       } finally {
-        if (!cancelled) {
-          setIsSyncing(false);
-        }
+        finishSyncRequest(requestId);
       }
     };
 
@@ -176,30 +195,33 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [applyCart, sessionId]);
+  }, [applyCart, beginSyncRequest, finishSyncRequest, isActiveSyncRequest, sessionId]);
 
   const addToCart = useCallback(async (product: IProduct, quantity: number) => {
     if (quantity < 1) {
       throw new Error('Quantity must be at least 1.');
     }
 
-    setIsSyncing(true);
-    setSyncError(null);
+    const requestId = beginSyncRequest();
 
     try {
       const nextCart = await addCartItem(sessionId, {
         productId: product.productId,
         quantity,
       });
-      applyCart(nextCart);
+      if (isActiveSyncRequest(requestId)) {
+        applyCart(nextCart);
+      }
     } catch (error) {
       const message = getErrorMessage(error);
-      setSyncError(message);
+      if (isActiveSyncRequest(requestId)) {
+        setSyncError(message);
+      }
       throw new Error(message);
     } finally {
-      setIsSyncing(false);
+      finishSyncRequest(requestId);
     }
-  }, [applyCart, sessionId]);
+  }, [applyCart, beginSyncRequest, finishSyncRequest, isActiveSyncRequest, sessionId]);
 
   const updateQuantity = useCallback(async (productId: number, quantity: number) => {
     if (quantity < 1) {
@@ -211,20 +233,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
       throw new Error('Cart item not found.');
     }
 
-    setIsSyncing(true);
-    setSyncError(null);
+    const requestId = beginSyncRequest();
 
     try {
       const nextCart = await updateCartItem(sessionId, existingItem.cartItemId, { quantity });
-      applyCart(nextCart);
+      if (isActiveSyncRequest(requestId)) {
+        applyCart(nextCart);
+      }
     } catch (error) {
       const message = getErrorMessage(error);
-      setSyncError(message);
+      if (isActiveSyncRequest(requestId)) {
+        setSyncError(message);
+      }
       throw new Error(message);
     } finally {
-      setIsSyncing(false);
+      finishSyncRequest(requestId);
     }
-  }, [applyCart, cart.items, sessionId]);
+  }, [applyCart, beginSyncRequest, cart.items, finishSyncRequest, isActiveSyncRequest, sessionId]);
 
   const removeFromCart = useCallback(async (productId: number) => {
     const existingItem = cart.items.find((item) => item.productId === productId);
@@ -232,36 +257,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
       throw new Error('Cart item not found.');
     }
 
-    setIsSyncing(true);
-    setSyncError(null);
+    const requestId = beginSyncRequest();
 
     try {
       const nextCart = await removeCartItem(sessionId, existingItem.cartItemId);
-      applyCart(nextCart);
+      if (isActiveSyncRequest(requestId)) {
+        applyCart(nextCart);
+      }
     } catch (error) {
       const message = getErrorMessage(error);
-      setSyncError(message);
+      if (isActiveSyncRequest(requestId)) {
+        setSyncError(message);
+      }
       throw new Error(message);
     } finally {
-      setIsSyncing(false);
+      finishSyncRequest(requestId);
     }
-  }, [applyCart, cart.items, sessionId]);
+  }, [applyCart, beginSyncRequest, cart.items, finishSyncRequest, isActiveSyncRequest, sessionId]);
 
   const clearCartItems = useCallback(async () => {
-    setIsSyncing(true);
-    setSyncError(null);
+    const requestId = beginSyncRequest();
 
     try {
       const nextCart = await clearCart(sessionId);
-      applyCart(nextCart);
+      if (isActiveSyncRequest(requestId)) {
+        applyCart(nextCart);
+      }
     } catch (error) {
       const message = getErrorMessage(error);
-      setSyncError(message);
+      if (isActiveSyncRequest(requestId)) {
+        setSyncError(message);
+      }
       throw new Error(message);
     } finally {
-      setIsSyncing(false);
+      finishSyncRequest(requestId);
     }
-  }, [applyCart, sessionId]);
+  }, [applyCart, beginSyncRequest, finishSyncRequest, isActiveSyncRequest, sessionId]);
 
   const contextValue = useMemo<ICartContextType>(() => ({
     cartItems: cart.items,

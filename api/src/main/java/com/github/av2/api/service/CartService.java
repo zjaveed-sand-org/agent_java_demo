@@ -9,7 +9,9 @@ import com.github.av2.api.model.CartItem;
 import com.github.av2.api.model.Product;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class CartService {
+    private static final Duration CART_TTL = Duration.ofHours(24);
     private final Map<String, Cart> carts = new ConcurrentHashMap<>();
     private final AtomicInteger cartItemSequence = new AtomicInteger(1);
     private final ProductService productService;
@@ -104,6 +107,7 @@ public class CartService {
 
     private Cart getOrCreateCart(String sessionId) {
         String normalizedSessionId = validateSessionId(sessionId);
+        pruneExpiredCarts();
         return carts.computeIfAbsent(normalizedSessionId, this::createCart);
     }
 
@@ -124,6 +128,19 @@ public class CartService {
         }
 
         return sessionId;
+    }
+
+    private void pruneExpiredCarts() {
+        Instant cutoff = Instant.now().minus(CART_TTL);
+        carts.entrySet().removeIf(entry -> isExpired(entry.getValue(), cutoff));
+    }
+
+    private boolean isExpired(Cart cart, Instant cutoff) {
+        try {
+            return Instant.parse(cart.getUpdatedAt()).isBefore(cutoff);
+        } catch (DateTimeParseException exception) {
+            return false;
+        }
     }
 
     private void validateQuantity(Integer quantity) {

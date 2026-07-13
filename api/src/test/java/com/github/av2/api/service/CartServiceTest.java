@@ -3,12 +3,16 @@ package com.github.av2.api.service;
 import com.github.av2.api.dto.cart.CartItemQuantityUpdateRequest;
 import com.github.av2.api.dto.cart.CartItemRequest;
 import com.github.av2.api.dto.cart.CartResponse;
+import com.github.av2.api.model.Cart;
 import com.github.av2.api.model.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.lang.reflect.Field;
+import java.time.Instant;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -105,5 +109,29 @@ class CartServiceTest {
         assertTrue(cleared.getItems().isEmpty());
         assertEquals(0, cleared.getItemCount());
         assertEquals(0f, cleared.getSubtotal());
+    }
+
+    @Test
+    void getCart_ShouldPruneExpiredSessions() throws ReflectiveOperationException {
+        Field cartsField = CartService.class.getDeclaredField("carts");
+        cartsField.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Cart> carts = (Map<String, Cart>) cartsField.get(cartService);
+        carts.put(
+                "expired-session",
+                new Cart(
+                        "cart-expired-session",
+                        "expired-session",
+                        Instant.now().minusSeconds(60L * 60 * 48).toString(),
+                        Instant.now().minusSeconds(60L * 60 * 48).toString(),
+                        java.util.List.of()
+                )
+        );
+
+        cartService.getCart("active-session");
+
+        assertTrue(carts.containsKey("active-session"));
+        assertTrue(!carts.containsKey("expired-session"));
     }
 }

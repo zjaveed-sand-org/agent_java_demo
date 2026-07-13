@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CartProvider, useCart } from './CartContext';
 import { ICartState } from '../types/cart';
@@ -62,6 +62,15 @@ const populatedCart = (quantity: number): ICartState => ({
   total: 97.4925 * quantity,
   itemCount: quantity,
 });
+
+const createDeferred = <T,>() => {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>((nextResolve) => {
+    resolve = nextResolve;
+  });
+
+  return { promise, resolve };
+};
 
 function CartConsumer() {
   const { cartItems, addToCart, updateQuantity, removeFromCart, clearCart, getCartItemCount, getCartTotal } = useCart();
@@ -150,6 +159,33 @@ describe('CartContext', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('count').textContent).toBe('3');
+    });
+  });
+
+  it('does not let the initial fetch overwrite a newer mutation result', async () => {
+    const deferredFetch = createDeferred<ICartState>();
+    mockedCartApi.fetchCart.mockReturnValue(deferredFetch.promise);
+
+    render(
+      <CartProvider>
+        <CartConsumer />
+      </CartProvider>,
+    );
+
+    fireEvent.click(screen.getByText('add'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('count').textContent).toBe('2');
+    });
+
+    await act(async () => {
+      deferredFetch.resolve(emptyCart());
+      await deferredFetch.promise;
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('count').textContent).toBe('2');
+      expect(screen.getByTestId('items-length').textContent).toBe('1');
     });
   });
 
