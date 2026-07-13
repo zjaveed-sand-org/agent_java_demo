@@ -40,7 +40,8 @@ public class CartService {
         Cart cart = getOrCreateCart(sessionId);
         synchronized (cart) {
             Product product = findProductOrThrow(request.getProductId());
-            CartItem existingItem = cart.getItems().stream()
+            List<CartItem> updatedItems = new ArrayList<>(cart.getItems());
+            CartItem existingItem = updatedItems.stream()
                     .filter(item -> item.getProductId().equals(product.getProductId()))
                     .findFirst()
                     .orElse(null);
@@ -49,7 +50,7 @@ public class CartService {
             if (existingItem != null) {
                 existingItem.setQuantity(existingItem.getQuantity() + request.getQuantity());
             } else {
-                cart.getItems().add(new CartItem(
+                updatedItems.add(new CartItem(
                         cartItemSequence.getAndIncrement(),
                         cart.getCartId(),
                         product.getProductId(),
@@ -58,6 +59,7 @@ public class CartService {
                 ));
             }
 
+            cart.setItems(updatedItems);
             cart.setUpdatedAt(updatedAt);
             return toResponse(cart);
         }
@@ -68,8 +70,10 @@ public class CartService {
 
         Cart cart = getOrCreateCart(sessionId);
         synchronized (cart) {
-            CartItem item = findCartItemOrThrow(cart, itemId);
+            List<CartItem> updatedItems = new ArrayList<>(cart.getItems());
+            CartItem item = findCartItemOrThrow(updatedItems, itemId);
             item.setQuantity(request.getQuantity());
+            cart.setItems(updatedItems);
             cart.setUpdatedAt(Instant.now().toString());
 
             return toResponse(cart);
@@ -79,8 +83,10 @@ public class CartService {
     public CartResponse removeItem(String sessionId, Integer itemId) {
         Cart cart = getOrCreateCart(sessionId);
         synchronized (cart) {
-            CartItem item = findCartItemOrThrow(cart, itemId);
-            cart.getItems().remove(item);
+            List<CartItem> updatedItems = new ArrayList<>(cart.getItems());
+            CartItem item = findCartItemOrThrow(updatedItems, itemId);
+            updatedItems.remove(item);
+            cart.setItems(updatedItems);
             cart.setUpdatedAt(Instant.now().toString());
 
             return toResponse(cart);
@@ -128,8 +134,8 @@ public class CartService {
                 .orElseThrow(() -> new NoSuchElementException("Product with ID " + productId + " was not found."));
     }
 
-    private CartItem findCartItemOrThrow(Cart cart, Integer itemId) {
-        return cart.getItems().stream()
+    private CartItem findCartItemOrThrow(List<CartItem> items, Integer itemId) {
+        return items.stream()
                 .filter(item -> item.getCartItemId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("Cart item with ID " + itemId + " was not found."));

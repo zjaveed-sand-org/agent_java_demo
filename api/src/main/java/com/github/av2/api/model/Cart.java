@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Data
@@ -26,4 +28,21 @@ public class Cart {
 
     @Schema(description = "The items in the cart")
     private List<CartItem> items;
+
+    public List<CartItem> getItems() {
+        if (items == null) {
+            return List.of();
+        }
+
+        return Collections.unmodifiableList(new ArrayList<>(items));
+    }
+
+    public void setItems(List<CartItem> items) {
+        if (items == null) {
+            this.items = null;
+            return;
+        }
+
+        this.items = new ArrayList<>(items);
+    }
 }
