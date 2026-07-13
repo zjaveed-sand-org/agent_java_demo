@@ -134,4 +134,31 @@ class CartServiceTest {
         assertTrue(carts.containsKey("active-session"));
         assertTrue(!carts.containsKey("expired-session"));
     }
+
+    @Test
+    void getCart_ShouldPruneMissingProductsInsteadOfFailing() {
+        cartService.addItem("session-a", new CartItemRequest(1, 1));
+        when(productService.findById(1)).thenReturn(Optional.empty());
+
+        CartResponse response = cartService.getCart("session-a");
+
+        assertTrue(response.getItems().isEmpty());
+        assertEquals(0, response.getItemCount());
+        assertEquals(0f, response.getTotal());
+    }
+
+    @Test
+    void getCart_ShouldTrimValidSessionIds() {
+        CartResponse response = cartService.getCart("  session-a  ");
+
+        assertEquals("session-a", response.getSessionId());
+        assertEquals("cart-session-a", response.getCartId());
+    }
+
+    @Test
+    void getCart_ShouldRejectInvalidSessionIds() {
+        assertThrows(IllegalArgumentException.class, () -> cartService.getCart("   "));
+        assertThrows(IllegalArgumentException.class, () -> cartService.getCart("session with spaces"));
+        assertThrows(IllegalArgumentException.class, () -> cartService.getCart("a".repeat(129)));
+    }
 }

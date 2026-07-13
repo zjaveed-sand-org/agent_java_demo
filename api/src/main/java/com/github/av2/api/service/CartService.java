@@ -16,12 +16,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 @Service
 public class CartService {
     private static final Duration CART_TTL = Duration.ofHours(24);
+    private static final int MAX_SESSION_ID_LENGTH = 128;
+    private static final Pattern SESSION_ID_PATTERN = Pattern.compile("[A-Za-z0-9._:-]+");
     private final Map<String, Cart> carts = new ConcurrentHashMap<>();
     private final AtomicInteger cartItemSequence = new AtomicInteger(1);
     private final ProductService productService;
@@ -123,11 +127,22 @@ public class CartService {
     }
 
     private String validateSessionId(String sessionId) {
-        if (sessionId == null || sessionId.isBlank()) {
+        if (sessionId == null) {
             throw new IllegalArgumentException("Session ID is required.");
         }
 
-        return sessionId;
+        String normalizedSessionId = sessionId.trim();
+        if (normalizedSessionId.isEmpty()) {
+            throw new IllegalArgumentException("Session ID is required.");
+        }
+        if (normalizedSessionId.length() > MAX_SESSION_ID_LENGTH) {
+            throw new IllegalArgumentException("Session ID must be 128 characters or fewer.");
+        }
+        if (!SESSION_ID_PATTERN.matcher(normalizedSessionId).matches()) {
+            throw new IllegalArgumentException("Session ID contains invalid characters.");
+        }
+
+        return normalizedSessionId;
     }
 
     private void pruneExpiredCarts() {
@@ -150,8 +165,12 @@ public class CartService {
     }
 
     private Product findProductOrThrow(Integer productId) {
-        return productService.findById(productId)
+        return findProduct(productId)
                 .orElseThrow(() -> new NoSuchElementException("Product with ID " + productId + " was not found."));
+    }
+
+    private Optional<Product> findProduct(Integer productId) {
+        return productService.findById(productId);
     }
 
     private CartItem findCartItemOrThrow(List<CartItem> items, Integer itemId) {
@@ -163,18 +182,25 @@ public class CartService {
 
     private CartResponse toResponse(Cart cart) {
         List<CartItemResponse> items = new ArrayList<>();
+        List<CartItem> validItems = new ArrayList<>();
         float subtotal = 0;
         float discountTotal = 0;
         int itemCount = 0;
 
         for (CartItem item : cart.getItems()) {
-            Product product = findProductOrThrow(item.getProductId());
+            Optional<Product> maybeProduct = findProduct(item.getProductId());
+            if (maybeProduct.isEmpty()) {
+                continue;
+            }
+
+            Product product = maybeProduct.get();
             float unitPrice = product.getPrice();
             float discount = product.getDiscount() != null ? product.getDiscount() : 0f;
             float lineSubtotal = unitPrice * item.getQuantity();
             float lineDiscount = unitPrice * discount * item.getQuantity();
             float lineTotal = lineSubtotal - lineDiscount;
 
+            validItems.add(item);
             subtotal += lineSubtotal;
             discountTotal += lineDiscount;
             itemCount += item.getQuantity();
@@ -191,8 +217,13 @@ public class CartService {
             ));
         }
 
+        if (validItems.size() != cart.getItems().size()) {
+            cart.setItems(validItems);
+            cart.setUpdatedAt(Instant.now().toString());
+        }
+
         return new CartResponse(
-                cart.getSessionId(),
+               cart.getSessionId(),
                 cart.getCartId(),
                 cart.getCreatedAt(),
                 cart.getUpdatedAt(),
