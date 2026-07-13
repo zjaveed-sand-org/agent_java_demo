@@ -151,10 +151,12 @@ public class CartService {
     }
 
     private boolean isExpired(Cart cart, Instant cutoff) {
-        try {
-            return Instant.parse(cart.getUpdatedAt()).isBefore(cutoff);
-        } catch (DateTimeParseException exception) {
-            return false;
+        synchronized (cart) {
+            try {
+                return Instant.parse(cart.getUpdatedAt()).isBefore(cutoff);
+            } catch (DateTimeParseException exception) {
+                return false;
+            }
         }
     }
 

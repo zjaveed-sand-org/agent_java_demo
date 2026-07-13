@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCart } from '../../../context/CartContext';
@@ -10,13 +10,28 @@ export default function Cart() {
   const { darkMode } = useTheme();
   const { t, i18n } = useTranslation(['cart', 'common']);
   const [statusMessage, setStatusMessage] = useState('');
+  const [draftQuantities, setDraftQuantities] = useState<Record<number, string>>({});
   const localizedSyncError = syncError?.startsWith('cart:')
     ? t(syncError)
     : syncError;
 
-  const handleQuantityInput = async (productId: number, event: ChangeEvent<HTMLInputElement>) => {
-    const nextQuantity = Number.parseInt(event.target.value, 10);
+  useEffect(() => {
+    setDraftQuantities(
+      Object.fromEntries(cartItems.map((item) => [item.cartItemId, item.quantity.toString()])),
+    );
+  }, [cartItems]);
+
+  const commitQuantityInput = async (productId: number, cartItemId: number, currentQuantity: number) => {
+    const nextQuantity = Number.parseInt(draftQuantities[cartItemId] ?? currentQuantity.toString(), 10);
     if (!Number.isFinite(nextQuantity) || nextQuantity < 1) {
+      setDraftQuantities((currentDrafts) => ({
+        ...currentDrafts,
+        [cartItemId]: currentQuantity.toString(),
+      }));
+      return;
+    }
+
+    if (nextQuantity === currentQuantity) {
       return;
     }
 
@@ -24,6 +39,36 @@ export default function Cart() {
       await updateQuantity(productId, nextQuantity);
     } catch {
       // Context syncError surfaces the failure.
+      setDraftQuantities((currentDrafts) => ({
+        ...currentDrafts,
+        [cartItemId]: currentQuantity.toString(),
+      }));
+    }
+  };
+
+  const handleQuantityInput = (cartItemId: number, event: ChangeEvent<HTMLInputElement>) => {
+    setDraftQuantities((currentDrafts) => ({
+      ...currentDrafts,
+      [cartItemId]: event.target.value,
+    }));
+  };
+
+  const handleQuantityKeyDown = async (
+    productId: number,
+    cartItemId: number,
+    currentQuantity: number,
+    event: KeyboardEvent<HTMLInputElement>,
+  ) => {
+    if (event.key === 'Enter') {
+      await commitQuantityInput(productId, cartItemId, currentQuantity);
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      setDraftQuantities((currentDrafts) => ({
+        ...currentDrafts,
+        [cartItemId]: currentQuantity.toString(),
+      }));
     }
   };
 
@@ -149,8 +194,14 @@ export default function Cart() {
                           <input
                             type="number"
                             min={1}
-                            value={item.quantity}
-                            onChange={(event) => void handleQuantityInput(item.productId, event)}
+                            value={draftQuantities[item.cartItemId] ?? item.quantity.toString()}
+                            onChange={(event) => handleQuantityInput(item.cartItemId, event)}
+                            onBlur={() => {
+                              void commitQuantityInput(item.productId, item.cartItemId, item.quantity);
+                            }}
+                            onKeyDown={(event) => {
+                              void handleQuantityKeyDown(item.productId, item.cartItemId, item.quantity, event);
+                            }}
                             className={`${darkMode ? 'bg-gray-800 text-light border-gray-600' : 'bg-white text-gray-800 border-gray-300'} w-16 rounded-md border px-2 py-1 text-center`}
                             aria-label={t('cart:labels.quantityInput', { name: item.name })}
                           />

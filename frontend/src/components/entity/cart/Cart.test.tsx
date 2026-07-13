@@ -76,4 +76,23 @@ describe('Cart page', () => {
       expect(screen.queryByText('Checkout is not implemented yet.')).not.toBeNull();
     });
   });
+
+  it('buffers typed quantities until blur before syncing', async () => {
+    render(
+      <MemoryRouter>
+        <Cart />
+      </MemoryRouter>,
+    );
+
+    const quantityInput = screen.getByRole('spinbutton', { name: 'Quantity for SmartFeeder One' });
+    fireEvent.change(quantityInput, { target: { value: '12' } });
+
+    expect(updateQuantity).not.toHaveBeenCalled();
+
+    fireEvent.blur(quantityInput);
+
+    await waitFor(() => {
+      expect(updateQuantity).toHaveBeenCalledWith(1, 12);
+    });
+  });
 });
