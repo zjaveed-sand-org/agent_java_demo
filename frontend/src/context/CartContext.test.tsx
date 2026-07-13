@@ -142,6 +142,28 @@ describe('CartContext', () => {
     });
   });
 
+  it('filters invalid stored cart items before restoring state', async () => {
+    window.localStorage.setItem('octocat-cart-state', JSON.stringify({
+      ...emptyCart(),
+      itemCount: 9,
+      items: [
+        populatedCart(1).items[0],
+        { productId: 'bad-data', quantity: 5 },
+      ],
+    }));
+
+    render(
+      <CartProvider>
+        <CartConsumer />
+      </CartProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('count').textContent).toBe('1');
+      expect(screen.getByTestId('items-length').textContent).toBe('1');
+    });
+  });
+
   it('updates item quantities through the shared context', async () => {
     mockedCartApi.fetchCart.mockResolvedValue(populatedCart(2));
 

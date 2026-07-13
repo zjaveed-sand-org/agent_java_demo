@@ -30,7 +30,7 @@ export default function Navigation() {
                 className="h-8 w-auto"
               />
               <div className="ml-2">
-                <span className={`text-xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'}`}>OctoCAT Supply</span>
+                <span className={`text-xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'}`}>{t('brand.name')}</span>
                 <span className="block text-xs text-primary">{t('brand.tagline')}</span>
               </div>
             </Link>

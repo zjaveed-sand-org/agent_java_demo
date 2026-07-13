@@ -55,6 +55,23 @@ const getSessionId = (): string => {
   return sessionId;
 };
 
+const isCartItem = (item: unknown): item is ICartItem => {
+  if (typeof item !== 'object' || item === null) {
+    return false;
+  }
+
+  const candidate = item as Partial<ICartItem>;
+
+  return typeof candidate.cartItemId === 'number'
+    && typeof candidate.productId === 'number'
+    && typeof candidate.name === 'string'
+    && typeof candidate.price === 'number'
+    && typeof candidate.quantity === 'number'
+    && typeof candidate.imgName === 'string'
+    && (typeof candidate.discount === 'number' || candidate.discount === null)
+    && typeof candidate.lineTotal === 'number';
+};
+
 const getStoredCartState = (sessionId: string): ICartState => {
   const emptyCartState = createEmptyCartState(sessionId);
 
@@ -72,21 +89,24 @@ const getStoredCartState = (sessionId: string): ICartState => {
     if (!Array.isArray(parsedCart.items)) {
       return emptyCartState;
     }
+    const validItems = parsedCart.items.filter(isCartItem);
 
     if (parsedCart.sessionId !== sessionId) {
       return {
         ...emptyCartState,
-        items: parsedCart.items,
+        items: validItems,
         subtotal: parsedCart.subtotal ?? 0,
         discountTotal: parsedCart.discountTotal ?? 0,
         total: parsedCart.total ?? 0,
-        itemCount: parsedCart.itemCount ?? 0,
+        itemCount: validItems.reduce((count, item) => count + item.quantity, 0),
       };
     }
 
     return {
       ...emptyCartState,
       ...parsedCart,
+      items: validItems,
+      itemCount: validItems.reduce((count, item) => count + item.quantity, 0),
       sessionId,
     };
   } catch {
