@@ -10,7 +10,7 @@ export default function Cart() {
   const { darkMode } = useTheme();
   const { t, i18n } = useTranslation(['cart', 'common']);
   const [statusMessage, setStatusMessage] = useState('');
-  const localizedSyncError = syncError?.startsWith('cart.')
+  const localizedSyncError = syncError?.startsWith('cart:')
     ? t(syncError)
     : syncError;
 

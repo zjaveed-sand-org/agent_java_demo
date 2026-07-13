@@ -94,9 +94,12 @@ public class CartService {
     }
 
     public CartResponse clearCart(String sessionId) {
-        Cart emptyCart = createCart(validateSessionId(sessionId));
-        carts.put(emptyCart.getSessionId(), emptyCart);
-        return toResponse(emptyCart);
+        Cart cart = getOrCreateCart(sessionId);
+        synchronized (cart) {
+            cart.setItems(List.of());
+            cart.setUpdatedAt(Instant.now().toString());
+            return toResponse(cart);
+        }
     }
 
     private Cart getOrCreateCart(String sessionId) {

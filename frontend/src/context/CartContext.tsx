@@ -30,7 +30,14 @@ const createSessionId = (): string => {
     return window.crypto.randomUUID();
   }
 
-  return `session-${Date.now()}`;
+  if (typeof window !== 'undefined' && typeof window.crypto?.getRandomValues === 'function') {
+    const bytes = new Uint8Array(16);
+    window.crypto.getRandomValues(bytes);
+    const randomToken = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+    return `session-${randomToken}`;
+  }
+
+  return `session-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 };
 
 const getSessionId = (): string => {
@@ -99,7 +106,7 @@ const getErrorMessage = (error: unknown): string => {
     return error.message;
   }
 
-  return 'cart.errors.unexpected';
+  return 'cart:errors.unexpected';
 };
 
 const CartContext = createContext<ICartContextType | null>(null);

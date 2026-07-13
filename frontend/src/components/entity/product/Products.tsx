@@ -184,7 +184,6 @@ export default function Products() {
                             : `${darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-200 text-gray-500'} cursor-not-allowed`
                         }`}
                         disabled={!quantities[product.productId]}
-                        aria-label={t('products:buttons.addToCart')}
                         id={`add-to-cart-${product.productId}`}
                       >
                         {t('products:buttons.addToCart')}
