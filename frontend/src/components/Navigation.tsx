@@ -1,12 +1,22 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function Navigation() {
   const { isLoggedIn, isAdmin, logout } = useAuth();
+  const { getCartItemCount } = useCart();
   const { darkMode, toggleTheme } = useTheme();
+  const { t, i18n } = useTranslation('common');
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
+  const cartItemCount = getCartItemCount();
+  const displayedCartCount = cartItemCount > 99 ? '99+' : cartItemCount;
+
+  const handleLanguageChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    void i18n.changeLanguage(event.target.value);
+  };
 
   return (
     <nav className={`${darkMode ? 'bg-dark/95' : 'bg-white/95'} backdrop-blur-sm fixed w-full z-50 shadow-md transition-colors duration-300`}>
@@ -16,27 +26,28 @@ export default function Navigation() {
             <Link to="/" className="flex items-center">
               <img 
                 src="/copilot.png" 
-                alt="Copilot icon"
+                alt={t('brand.logoAlt')}
                 className="h-8 w-auto"
               />
               <div className="ml-2">
-                <span className={`text-xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'}`}>OctoCAT Supply</span>
-                <span className="block text-xs text-primary">Smart Cat Tech, Powered by AI</span>
+                <span className={`text-xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'}`}>{t('brand.name')}</span>
+                <span className="block text-xs text-primary">{t('brand.tagline')}</span>
               </div>
             </Link>
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              <Link to="/" className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}>Home</Link>
-              <Link to="/products" className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}>Products</Link>
-              <Link to="/about" className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}>About us</Link>
+              <Link to="/" className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}>{t('nav.home')}</Link>
+              <Link to="/products" className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}>{t('nav.products')}</Link>
+              <Link to="/about" className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}>{t('nav.about')}</Link>
               {isAdmin && (
                 <div className="relative">
                   <button 
                     onClick={() => setAdminMenuOpen(!adminMenuOpen)}
+                    aria-expanded={adminMenuOpen}
                     className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium flex items-center transition-colors`}
                   >
-                    Admin
+                    {t('nav.admin')}
                     <svg 
                       className={`ml-1 h-4 w-4 transform ${adminMenuOpen ? 'rotate-180' : ''} transition-transform`}
                       fill="none" 
@@ -57,7 +68,7 @@ export default function Navigation() {
                           className={`block px-4 py-2 text-sm ${darkMode ? 'text-light hover:bg-primary hover:text-white' : 'text-gray-700 hover:bg-primary hover:text-white'} transition-colors`}
                           onClick={() => setAdminMenuOpen(false)}
                         >
-                          Manage Products
+                          {t('nav.manageProducts')}
                         </Link>
                         {/* Space for other entity management links */}
                       </div>
@@ -67,11 +78,41 @@ export default function Navigation() {
               )}
             </div>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-3">
+            <label className="sr-only" htmlFor="language-selector">{t('nav.language')}</label>
+            <select
+              id="language-selector"
+              value={(i18n.resolvedLanguage ?? i18n.language).split('-')[0]}
+              onChange={handleLanguageChange}
+              className={`${darkMode ? 'bg-gray-800 text-light border-gray-700' : 'bg-white text-gray-700 border-gray-300'} rounded-md border px-2 py-1 text-sm transition-colors`}
+              aria-label={t('nav.language')}
+            >
+              <option value="en">EN</option>
+              <option value="de">DE</option>
+              <option value="es">ES</option>
+              <option value="zh">中文</option>
+            </select>
+            <Link
+              to="/cart"
+              className={`relative rounded-full p-2 transition-colors ${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'}`}
+              aria-label={t('nav.cartWithCount', { count: cartItemCount })}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h2l2.4 10.2A2 2 0 009.35 16H18a2 2 0 001.95-1.55L21 8H7" />
+                <circle cx="10" cy="20" r="1.5" />
+                <circle cx="18" cy="20" r="1.5" />
+              </svg>
+              <span className="sr-only">{t('nav.cart')}</span>
+              {cartItemCount > 0 && (
+                <span className="absolute -right-1 -top-1 min-w-[1.25rem] rounded-full bg-primary px-1 text-center text-xs font-semibold text-white">
+                  {displayedCartCount}
+                </span>
+              )}
+            </Link>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full focus:outline-none transition-colors"
-              aria-label="Toggle dark/light mode"
+              aria-label={t('nav.themeToggle')}
             >
               {darkMode ? (
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-300" viewBox="0 0 20 20" fill="currentColor">
@@ -86,14 +127,14 @@ export default function Navigation() {
             {isLoggedIn ? (
               <>
                 <span className={`${darkMode ? 'text-light' : 'text-gray-700'} text-sm transition-colors`}>
-                  {isAdmin && <span className="text-primary">(Admin) </span>}
-                  Welcome!
+                  {isAdmin && <span className="text-primary">({t('nav.adminTag')}) </span>}
+                  {t('nav.welcome')}
                 </span>
                 <button 
                   onClick={logout}
                   className={`${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} px-3 py-2 rounded-md text-sm font-medium transition-colors`}
                 >
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </>
             ) : (
@@ -101,7 +142,7 @@ export default function Navigation() {
                 to="/login" 
                 className="bg-primary hover:bg-accent text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
-                Login
+                {t('nav.login')}
               </Link>
             )}
           </div>

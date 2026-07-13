@@ -1,0 +1,46 @@
+{
+  "pageTitle": "Ihr Warenkorb",
+  "empty": {
+    "title": "Ihr Warenkorb ist leer",
+    "description": "Fügen Sie zunächst einige smarte Katzenprodukte hinzu."
+  },
+  "table": {
+    "item": "Artikel",
+    "unitPrice": "Einzelpreis",
+    "quantity": "Menge",
+    "lineTotal": "Gesamtpreis",
+    "actions": "Aktionen"
+  },
+  "summary": {
+    "title": "Bestellübersicht",
+    "subtotal": "Zwischensumme",
+    "discounts": "Rabatte",
+    "total": "Gesamtsumme"
+  },
+  "buttons": {
+    "clearCart": "Warenkorb leeren",
+    "checkout": "Zur Kasse",
+    "removeItem": "{{name}} entfernen",
+    "decreaseQuantity": "Menge von {{name}} verringern",
+    "increaseQuantity": "Menge von {{name}} erhöhen"
+  },
+  "labels": {
+    "quantityInput": "Menge für {{name}}",
+    "productImage": "Bild von {{name}}"
+  },
+  "messages": {
+    "itemRemoved": "{{name}} wurde aus dem Warenkorb entfernt.",
+    "checkoutPlaceholder": "Der Checkout ist noch nicht implementiert.",
+    "cartCleared": "Ihr Warenkorb wurde geleert.",
+    "syncError": "Synchronisierungsfehler im Warenkorb: {{message}}"
+  },
+  "errors": {
+    "unexpected": "Unerwarteter Warenkorbfehler"
+  },
+  "confirmations": {
+    "removeItem": "{{name}} aus dem Warenkorb entfernen?"
+  },
+  "status": {
+    "syncing": "Warenkorb wird synchronisiert..."
+  }
+}

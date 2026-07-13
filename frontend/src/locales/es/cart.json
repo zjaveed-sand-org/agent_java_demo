@@ -1,0 +1,46 @@
+{
+  "pageTitle": "Su carrito",
+  "empty": {
+    "title": "Su carrito está vacío",
+    "description": "Añada algunos artículos inteligentes para gatos para comenzar."
+  },
+  "table": {
+    "item": "Artículo",
+    "unitPrice": "Precio unitario",
+    "quantity": "Cantidad",
+    "lineTotal": "Total",
+    "actions": "Acciones"
+  },
+  "summary": {
+    "title": "Resumen del pedido",
+    "subtotal": "Subtotal",
+    "discounts": "Descuentos",
+    "total": "Total general"
+  },
+  "buttons": {
+    "clearCart": "Vaciar carrito",
+    "checkout": "Pagar",
+    "removeItem": "Eliminar {{name}}",
+    "decreaseQuantity": "Reducir cantidad de {{name}}",
+    "increaseQuantity": "Aumentar cantidad de {{name}}"
+  },
+  "labels": {
+    "quantityInput": "Cantidad para {{name}}",
+    "productImage": "Imagen de {{name}}"
+  },
+  "messages": {
+    "itemRemoved": "{{name}} se eliminó del carrito.",
+    "checkoutPlaceholder": "La compra todavía no está implementada.",
+    "cartCleared": "Su carrito se ha vaciado.",
+    "syncError": "Error de sincronización del carrito: {{message}}"
+  },
+  "errors": {
+    "unexpected": "Error inesperado del carrito"
+  },
+  "confirmations": {
+    "removeItem": "¿Eliminar {{name}} del carrito?"
+  },
+  "status": {
+    "syncing": "Sincronizando carrito..."
+  }
+}
