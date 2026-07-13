@@ -72,6 +72,20 @@ const isCartItem = (item: unknown): item is ICartItem => {
     && typeof candidate.lineTotal === 'number';
 };
 
+const getCartMetrics = (items: ICartItem[]) => {
+  const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const total = items.reduce((sum, item) => sum + item.lineTotal, 0);
+  const discountTotal = subtotal - total;
+  const itemCount = items.reduce((count, item) => count + item.quantity, 0);
+
+  return {
+    subtotal,
+    discountTotal,
+    total,
+    itemCount,
+  };
+};
+
 const getStoredCartState = (sessionId: string): ICartState => {
   const emptyCartState = createEmptyCartState(sessionId);
 
@@ -90,15 +104,13 @@ const getStoredCartState = (sessionId: string): ICartState => {
       return emptyCartState;
     }
     const validItems = parsedCart.items.filter(isCartItem);
+    const metrics = getCartMetrics(validItems);
 
     if (parsedCart.sessionId !== sessionId) {
       return {
         ...emptyCartState,
         items: validItems,
-        subtotal: parsedCart.subtotal ?? 0,
-        discountTotal: parsedCart.discountTotal ?? 0,
-        total: parsedCart.total ?? 0,
-        itemCount: validItems.reduce((count, item) => count + item.quantity, 0),
+        ...metrics,
       };
     }
 
@@ -106,7 +118,7 @@ const getStoredCartState = (sessionId: string): ICartState => {
       ...emptyCartState,
       ...parsedCart,
       items: validItems,
-      itemCount: validItems.reduce((count, item) => count + item.quantity, 0),
+      ...metrics,
       sessionId,
     };
   } catch {

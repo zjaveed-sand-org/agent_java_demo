@@ -95,4 +95,26 @@ describe('Cart page', () => {
       expect(updateQuantity).toHaveBeenCalledWith(1, 12);
     });
   });
+
+  it('shows a localized generic sync error for non-translation-key failures', () => {
+    mockedCartHook.useCart.mockReturnValue({
+      cartItems: [],
+      subtotal: 0,
+      discountTotal: 0,
+      total: 0,
+      isSyncing: false,
+      syncError: 'Quantity must be at least 1.',
+      updateQuantity,
+      removeFromCart,
+      clearCart,
+    });
+
+    render(
+      <MemoryRouter>
+        <Cart />
+      </MemoryRouter>,
+    );
+
+    expect(screen.queryByText('Cart sync error: Unexpected cart error')).not.toBeNull();
+  });
 });

@@ -145,6 +145,9 @@ describe('CartContext', () => {
   it('filters invalid stored cart items before restoring state', async () => {
     window.localStorage.setItem('octocat-cart-state', JSON.stringify({
       ...emptyCart(),
+      subtotal: 999,
+      discountTotal: 888,
+      total: 777,
       itemCount: 9,
       items: [
         populatedCart(1).items[0],
@@ -160,6 +163,7 @@ describe('CartContext', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('count').textContent).toBe('1');
+      expect(screen.getByTestId('total').textContent).toBe(populatedCart(1).total.toString());
       expect(screen.getByTestId('items-length').textContent).toBe('1');
     });
   });

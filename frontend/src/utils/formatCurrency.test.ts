@@ -3,10 +3,20 @@ import { formatCurrency } from './formatCurrency';
 
 describe('formatCurrency', () => {
   it('uses the base language when a region-specific locale is provided', () => {
-    expect(formatCurrency(1234.56, 'de-DE')).toBe('1.234,56\xa0$');
+    const expected = new Intl.NumberFormat('de-DE', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(1234.56);
+
+    expect(formatCurrency(1234.56, 'de-DE')).toBe(expected);
   });
 
   it('falls back to English formatting for unknown locales', () => {
-    expect(formatCurrency(1234.56, 'fr-FR')).toBe('$1,234.56');
+    const expected = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(1234.56);
+
+    expect(formatCurrency(1234.56, 'fr-FR')).toBe(expected);
   });
 });

@@ -13,7 +13,7 @@ export default function Cart() {
   const [draftQuantities, setDraftQuantities] = useState<Record<number, string>>({});
   const localizedSyncError = syncError?.startsWith('cart:')
     ? t(syncError)
-    : syncError;
+    : t('cart:errors.unexpected');
 
   useEffect(() => {
     setDraftQuantities(
