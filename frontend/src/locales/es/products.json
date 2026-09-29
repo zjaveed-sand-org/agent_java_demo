@@ -1,0 +1,24 @@
+{
+  "pageTitle": "Productos",
+  "searchPlaceholder": "Buscar productos...",
+  "searchLabel": "Buscar productos",
+  "errors": {
+    "fetchFailed": "No se pudieron obtener los productos"
+  },
+  "labels": {
+    "percentOff": "{{percent}} % DE DESCUENTO",
+    "quantityOfProduct": "Cantidad de {{name}}"
+  },
+  "buttons": {
+    "addToCart": "Añadir al carrito",
+    "decreaseQuantity": "Reducir cantidad de {{name}}",
+    "increaseQuantity": "Aumentar cantidad de {{name}}"
+  },
+  "messages": {
+    "addedToCart": "Se añadieron {{quantity}} unidades de {{name}} al carrito.",
+    "addFailed": "No se pudo añadir {{name}} al carrito."
+  },
+  "modal": {
+    "closeLabel": "Cerrar detalles del producto"
+  }
+}

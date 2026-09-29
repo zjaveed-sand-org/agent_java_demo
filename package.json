@@ -11,6 +11,8 @@
       "dev:api": "cd api && mvn spring-boot:run",
       "dev:frontend": "npm run dev --workspace=frontend",
       "dev": "concurrently \"npm run dev:api\" \"npm run dev:frontend\"",
+      "test:api": "cd api && mvn test",
+      "test:frontend": "npm run test --workspace=frontend",
       "test": "cd api && mvn test",
       "lint": "npm run lint --workspace=frontend",
       "coverage": "cd api && mvn test clover:clover"
