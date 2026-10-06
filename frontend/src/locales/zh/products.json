@@ -1,0 +1,24 @@
+{
+  "pageTitle": "产品",
+  "searchPlaceholder": "搜索产品...",
+  "searchLabel": "搜索产品",
+  "errors": {
+    "fetchFailed": "获取产品失败"
+  },
+  "labels": {
+    "percentOff": "{{percent}}% 折扣",
+    "quantityOfProduct": "{{name}} 的数量"
+  },
+  "buttons": {
+    "addToCart": "加入购物车",
+    "decreaseQuantity": "减少 {{name}} 的数量",
+    "increaseQuantity": "增加 {{name}} 的数量"
+  },
+  "messages": {
+    "addedToCart": "已将 {{quantity}} 件 {{name}} 加入购物车。",
+    "addFailed": "无法将 {{name}} 加入购物车。"
+  },
+  "modal": {
+    "closeLabel": "关闭产品详情"
+  }
+}

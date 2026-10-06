@@ -1,0 +1,51 @@
+{
+  "brand": {
+    "name": "OctoCAT Supply",
+    "tagline": "Intelligente Katzentechnik, mit KI betrieben",
+    "logoAlt": "Copilot-Symbol"
+  },
+  "nav": {
+    "home": "Startseite",
+    "products": "Produkte",
+    "about": "Über uns",
+    "admin": "Admin",
+    "manageProducts": "Produkte verwalten",
+    "adminTag": "Admin",
+    "welcome": "Willkommen!",
+    "logout": "Abmelden",
+    "login": "Anmelden",
+    "cart": "Warenkorb",
+    "cartWithCount": "Warenkorb ({{count}} Artikel)",
+    "themeToggle": "Dunklen oder hellen Modus umschalten",
+    "language": "Sprache"
+  },
+  "footer": {
+    "aboutTitle": "Über uns",
+    "aboutText": "OctoCAT Supply ist der führende Anbieter KI-gestützter smarter Produkte für Ihre Katzen. Unsere innovative Technologie verbessert das Wohlbefinden Ihrer Katze durch intelligente Überwachung, interaktive Unterhaltung und personalisierte Komfortlösungen.",
+    "accountTitle": "Konto",
+    "myCart": "Mein Warenkorb",
+    "checkout": "Zur Kasse",
+    "shoppingDetails": "Einkaufsdetails",
+    "order": "Bestellung",
+    "helpCenter": "Hilfecenter",
+    "helpfulLinksTitle": "Hilfreiche Links",
+    "services": "Services",
+    "supports": "Support",
+    "feedback": "Feedback",
+    "termsAndConditions": "Allgemeine Geschäftsbedingungen",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "socialMediaTitle": "Soziale Medien",
+    "twitter": "Twitter",
+    "facebook": "Facebook",
+    "youtube": "YouTube",
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "copyright": "Copyright © 2025 OctoCAT Supply. Alle Rechte vorbehalten"
+  },
+  "actions": {
+    "continueShopping": "Weiter einkaufen"
+  },
+  "status": {
+    "loading": "Wird geladen..."
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "brand": {
+    "name": "OctoCAT Supply",
+    "tagline": "Smart Cat Tech, Powered by AI",
+    "logoAlt": "Copilot icon"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About us",
+    "admin": "Admin",
+    "manageProducts": "Manage Products",
+    "adminTag": "Admin",
+    "welcome": "Welcome!",
+    "logout": "Logout",
+    "login": "Login",
+    "cart": "Cart",
+    "cartWithCount": "Cart ({{count}} items)",
+    "themeToggle": "Toggle dark or light mode",
+    "language": "Language"
+  },
+  "footer": {
+    "aboutTitle": "About",
+    "aboutText": "OctoCAT Supply is the leading provider of AI-powered smart products for your feline companions. Our innovative technology enhances your cat's wellbeing through intelligent monitoring, interactive entertainment, and personalized comfort solutions.",
+    "accountTitle": "Account",
+    "myCart": "My Cart",
+    "checkout": "Checkout",
+    "shoppingDetails": "Shopping Details",
+    "order": "Order",
+    "helpCenter": "Help Center",
+    "helpfulLinksTitle": "Helpful Links",
+    "services": "Services",
+    "supports": "Supports",
+    "feedback": "Feedback",
+    "termsAndConditions": "Terms & Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "socialMediaTitle": "Social Media",
+    "twitter": "Twitter",
+    "facebook": "Facebook",
+    "youtube": "YouTube",
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "copyright": "Copyright © 2025 OctoCAT Supply. All Rights Reserved"
+  },
+  "actions": {
+    "continueShopping": "Continue Shopping"
+  },
+  "status": {
+    "loading": "Loading..."
+  }
+}
