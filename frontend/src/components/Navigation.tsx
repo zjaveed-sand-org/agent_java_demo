@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useCart } from '../context/CartContext';
 import { useState } from 'react';
 
 export default function Navigation() {
   const { isLoggedIn, isAdmin, logout } = useAuth();
   const { darkMode, toggleTheme } = useTheme();
+  const { totalItems } = useCart();
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
 
   return (
@@ -68,6 +70,32 @@ export default function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
+            <Link
+              to="/cart"
+              className={`relative p-2 rounded-full ${darkMode ? 'text-light hover:text-primary' : 'text-gray-700 hover:text-primary'} transition-colors`}
+              aria-label={`My Cart, ${totalItems} ${totalItems === 1 ? 'item' : 'items'}`}
+              id="nav-cart"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+              </svg>
+              {totalItems > 0 && (
+                <span
+                  className="absolute -top-0.5 -right-0.5 bg-primary text-white text-xs font-bold rounded-full min-w-[1.25rem] h-5 flex items-center justify-center px-1"
+                  data-testid="nav-cart-badge"
+                >
+                  {totalItems}
+                </span>
+              )}
+            </Link>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full focus:outline-none transition-colors"
