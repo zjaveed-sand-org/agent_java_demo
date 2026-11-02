@@ -1,0 +1,51 @@
+{
+  "brand": {
+    "name": "OctoCAT Supply",
+    "tagline": "Tecnología inteligente para gatos, impulsada por IA",
+    "logoAlt": "Icono de Copilot"
+  },
+  "nav": {
+    "home": "Inicio",
+    "products": "Productos",
+    "about": "Sobre nosotros",
+    "admin": "Administración",
+    "manageProducts": "Gestionar productos",
+    "adminTag": "Admin",
+    "welcome": "¡Bienvenido!",
+    "logout": "Cerrar sesión",
+    "login": "Iniciar sesión",
+    "cart": "Carrito",
+    "cartWithCount": "Carrito ({{count}} artículos)",
+    "themeToggle": "Cambiar entre modo oscuro y claro",
+    "language": "Idioma"
+  },
+  "footer": {
+    "aboutTitle": "Acerca de",
+    "aboutText": "OctoCAT Supply es el proveedor líder de productos inteligentes impulsados por IA para sus compañeros felinos. Nuestra tecnología innovadora mejora el bienestar de su gato mediante monitoreo inteligente, entretenimiento interactivo y soluciones de confort personalizadas.",
+    "accountTitle": "Cuenta",
+    "myCart": "Mi carrito",
+    "checkout": "Pagar",
+    "shoppingDetails": "Detalles de compra",
+    "order": "Pedido",
+    "helpCenter": "Centro de ayuda",
+    "helpfulLinksTitle": "Enlaces útiles",
+    "services": "Servicios",
+    "supports": "Soporte",
+    "feedback": "Comentarios",
+    "termsAndConditions": "Términos y condiciones",
+    "privacyPolicy": "Política de privacidad",
+    "socialMediaTitle": "Redes sociales",
+    "twitter": "Twitter",
+    "facebook": "Facebook",
+    "youtube": "YouTube",
+    "linkedin": "LinkedIn",
+    "instagram": "Instagram",
+    "copyright": "Copyright © 2025 OctoCAT Supply. Todos los derechos reservados"
+  },
+  "actions": {
+    "continueShopping": "Seguir comprando"
+  },
+  "status": {
+    "loading": "Cargando..."
+  }
+}
