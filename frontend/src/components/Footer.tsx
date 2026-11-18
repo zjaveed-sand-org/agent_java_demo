@@ -1,8 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 
 const Footer: React.FC = () => {
   const { darkMode } = useTheme();
+  const { t } = useTranslation();
   
   return (
     <footer className={`${darkMode ? 'bg-gray-900 text-gray-300' : 'bg-gray-200 text-gray-700'} py-8 transition-colors duration-300`}>
@@ -20,7 +23,7 @@ const Footer: React.FC = () => {
           <div>
             <h2 className="font-bold text-xl mb-4 text-primary">Account</h2>
             <ul className="space-y-2">
-              <li><a href="#" className="hover:text-primary">My Cart</a></li>
+              <li><Link to="/cart" className="hover:text-primary">{t('cart.view')}</Link></li>
               <li><a href="#" className="hover:text-primary">Checkout</a></li>
               <li><a href="#" className="hover:text-primary">Shopping Details</a></li>
               <li><a href="#" className="hover:text-primary">Order</a></li>
