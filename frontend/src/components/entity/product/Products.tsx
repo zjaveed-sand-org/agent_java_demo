@@ -3,6 +3,10 @@ import axios from 'axios';
 import { useQuery } from 'react-query';
 import { api } from '../../../api/config';
 import { useTheme } from '../../../context/ThemeContext';
+import { useCart } from '../../../context/CartContext';
+import { unitPriceCents } from '../../../context/cart';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 interface Product {
   productId: number;
@@ -26,8 +30,12 @@ export default function Products() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [addedProduct, setAddedProduct] = useState<string | null>(null);
+  const [addError, setAddError] = useState(false);
   const { data: products, isLoading, error } = useQuery('products', fetchProducts);
   const { darkMode } = useTheme();
+  const { addItem } = useCart();
+  const { t } = useTranslation();
 
   const filteredProducts = products?.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -41,15 +49,18 @@ export default function Products() {
     }));
   };
 
-  const handleAddToCart = (productId: number) => {
-    const quantity = quantities[productId] || 0;
-    if (quantity > 0) {
-      // TODO: Implement cart functionality
-      alert(`Added ${quantity} items to cart`);
+  const handleAddToCart = (product: Product) => {
+    const quantity = quantities[product.productId] || 0;
+    if (quantity > 0 && addItem(product, quantity)) {
+      setAddedProduct(product.name);
+      setAddError(false);
       setQuantities(prev => ({
         ...prev,
-        [productId]: 0
+        [product.productId]: 0
       }));
+    } else {
+      setAddedProduct(null);
+      setAddError(true);
     }
   };
 
@@ -85,6 +96,15 @@ export default function Products() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col space-y-6">
           <h1 className={`text-3xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'} transition-colors duration-300`}>Products</h1>
+          <div role="status" aria-live="polite">
+            {addError && <p className={darkMode ? 'text-red-300' : 'text-red-700'}>{t('cart.addError')}</p>}
+            {addedProduct && (
+              <p className={darkMode ? 'text-light' : 'text-gray-800'}>
+                {t('cart.added', { name: addedProduct })}{' '}
+                <Link to="/cart" className="font-semibold underline underline-offset-2">{t('cart.view')}</Link>
+              </p>
+            )}
+          </div>
           
           <div className="relative">
             <input
@@ -135,7 +155,7 @@ export default function Products() {
                       {product.discount ? (
                         <div>
                           <span className="text-gray-500 line-through text-sm mr-2">${product.price.toFixed(2)}</span>
-                          <span className="text-primary text-xl font-bold">${(product.price * (1 - product.discount)).toFixed(2)}</span>
+                          <span className="text-primary text-xl font-bold">${(unitPriceCents(product) / 100).toFixed(2)}</span>
                         </div>
                       ) : (
                         <span className="text-primary text-xl font-bold">${product.price.toFixed(2)}</span>
@@ -147,14 +167,14 @@ export default function Products() {
                         <button 
                           onClick={() => handleQuantityChange(product.productId, -1)}
                           className={`w-8 h-8 flex items-center justify-center ${darkMode ? 'text-light' : 'text-gray-700'} hover:text-primary transition-colors duration-300`}
-                          aria-label={`Decrease quantity of ${product.name}`}
+                          aria-label={t('cart.decrease', { name: product.name })}
                           id={`decrease-qty-${product.productId}`}
                         >
                           <span aria-hidden="true">-</span>
                         </button>
                         <span 
                           className={`${darkMode ? 'text-light' : 'text-gray-800'} min-w-[2rem] text-center transition-colors duration-300`}
-                          aria-label={`Quantity of ${product.name}`}
+                          aria-label={t('cart.quantity', { name: product.name })}
                           id={`qty-${product.productId}`}
                         >
                           {quantities[product.productId] || 0}
@@ -162,24 +182,24 @@ export default function Products() {
                         <button 
                           onClick={() => handleQuantityChange(product.productId, 1)}
                           className={`w-8 h-8 flex items-center justify-center ${darkMode ? 'text-light' : 'text-gray-700'} hover:text-primary transition-colors duration-300`}
-                          aria-label={`Increase quantity of ${product.name}`}
+                          aria-label={t('cart.increase', { name: product.name })}
                           id={`increase-qty-${product.productId}`}
                         >
                           <span aria-hidden="true">+</span>
                         </button>
                       </div>
                       <button 
-                        onClick={() => handleAddToCart(product.productId)}
+                        onClick={() => handleAddToCart(product)}
                         className={`px-4 py-2 rounded-lg transition-colors ${
                           quantities[product.productId] 
                             ? 'bg-primary hover:bg-accent text-white' 
                             : `${darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-200 text-gray-500'} cursor-not-allowed`
                         }`}
                         disabled={!quantities[product.productId]}
-                        aria-label={`Add ${quantities[product.productId] || 0} ${product.name} to cart`}
+                        aria-label={t('cart.addLabel', { count: quantities[product.productId] || 0, name: product.name })}
                         id={`add-to-cart-${product.productId}`}
                       >
-                        Add to Cart
+                        {t('cart.add')}
                       </button>
                     </div>
                   </div>

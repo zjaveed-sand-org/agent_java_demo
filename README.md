@@ -88,6 +88,7 @@ To showcase extended capabilities:
 ## 📚 Documentation
 
 - [Detailed Architecture](./docs/architecture.md)
+- [Cart / Warenkorb](./docs/cart.md)
 - [Complete Demo Script](./docs/demo-script.md)
 
 ## 🎓 Pro Tips for Solution Engineers

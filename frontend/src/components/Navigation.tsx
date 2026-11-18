@@ -2,10 +2,14 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useCart } from '../context/CartContext';
 
 export default function Navigation() {
   const { isLoggedIn, isAdmin, logout } = useAuth();
   const { darkMode, toggleTheme } = useTheme();
+  const { itemCount } = useCart();
+  const { t, i18n } = useTranslation();
   const [adminMenuOpen, setAdminMenuOpen] = useState(false);
 
   return (
@@ -19,7 +23,7 @@ export default function Navigation() {
                 alt="Copilot icon"
                 className="h-8 w-auto"
               />
-              <div className="ml-2">
+              <div className="ml-2 hidden sm:block">
                 <span className={`text-xl font-bold ${darkMode ? 'text-light' : 'text-gray-800'}`}>OctoCAT Supply</span>
                 <span className="block text-xs text-primary">Smart Cat Tech, Powered by AI</span>
               </div>
@@ -67,7 +71,34 @@ export default function Navigation() {
               )}
             </div>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <label className="sr-only" htmlFor="language-select">{t('cart.language')}</label>
+            <select
+              id="language-select"
+              title={t('cart.language')}
+              value={i18n.resolvedLanguage}
+              onChange={(event) => void i18n.changeLanguage(event.target.value)}
+              className={`max-w-16 rounded border px-1 py-1 text-sm ${darkMode ? 'border-gray-700 bg-gray-800 text-light' : 'border-gray-300 bg-white text-gray-800'}`}
+            >
+              <option value="en">EN</option>
+              <option value="de">DE</option>
+              <option value="es">ES</option>
+              <option value="zh">中文</option>
+            </select>
+            <Link
+              to="/cart"
+              aria-label={t('cart.navigation', { count: itemCount })}
+              className={`relative rounded p-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${darkMode ? 'text-light' : 'text-gray-800'}`}
+            >
+              <svg aria-hidden="true" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h2l2 11h10l3-8H6M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm8 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" />
+              </svg>
+              {itemCount > 0 && (
+                <span aria-hidden="true" className="absolute -right-1 -top-1 min-w-5 rounded-full bg-green-700 px-1 text-center text-xs font-bold leading-5 text-white">
+                  {itemCount}
+                </span>
+              )}
+            </Link>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full focus:outline-none transition-colors"
@@ -85,7 +116,7 @@ export default function Navigation() {
             </button>
             {isLoggedIn ? (
               <>
-                <span className={`${darkMode ? 'text-light' : 'text-gray-700'} text-sm transition-colors`}>
+                <span className={`hidden sm:inline ${darkMode ? 'text-light' : 'text-gray-700'} text-sm transition-colors`}>
                   {isAdmin && <span className="text-primary">(Admin) </span>}
                   Welcome!
                 </span>
